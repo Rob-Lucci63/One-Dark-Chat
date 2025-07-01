@@ -2,231 +2,144 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Battle Royale 2D</title>
+  <title>Battle Royale 2D - ارتقا یافته</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: #202020;
-      touch-action: none;
+    html, body { margin:0; padding:0; overflow:hidden; background:#202020; touch-action:none; }
+    canvas { display:block; background:#333; touch-action:none; }
+    #move-joystick-container, #aim-joystick-container {
+      position:absolute; bottom:20px; width:150px; height:150px; display:none; z-index:10; touch-action:none;
     }
-    canvas {
-      display: block;
-      background: #333;
-      touch-action: none;
+    #move-joystick-container { left:20px; }
+    #aim-joystick-container { right:20px; }
+    #hud {
+      position:absolute; top:10px; left:50%; transform:translateX(-50%); width:300px; height:24px;
+      background:#555; border-radius:12px; overflow:hidden; z-index:11;
+      display:flex; align-items:center;
     }
-    #joystick-container {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      width: 150px;
-      height: 150px;
-      display: none;
-      z-index: 10;
-      touch-action: none;
+    #hp-fill { height:100%; background:lime; width:100%; transition:width .2s; }
+    #heal-count { position:absolute; top:45px; left:50%; transform:translateX(-50%); color:white; font-family:sans-serif; z-index:11; }
+    #music-control {
+      position:absolute; top:10px; right:10px; z-index:11;
     }
-    #fire-button {
-      position: absolute;
-      bottom: 40px;
-      right: 20px;
-      width: 60px;
-      height: 60px;
-      border-radius: 30px;
-      background: #e74c3c;
-      color: #fff;
-      font-size: 16px;
-      border: none;
-      display: none;
-      z-index: 10;
-    }
-    #credit {
-      position: absolute;
-      bottom: 10px;
-      width: 100%;
-      text-align: center;
-      color: #aaa;
-      font-family: sans-serif;
-      font-size: 14px;
-      z-index: 5;
-      user-select: none;
-    }
+    #music-control button { background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; }
+    .heal-item { position:absolute; width:20px; height:20px; background:hotpink; border-radius:50%; }
+    #game-over { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:white; font-family:sans-serif; font-size:32px; display:none; text-align:center; z-index:12; }
+    #restart-btn { margin-top:20px; padding:10px 20px; font-size:18px; border:none; border-radius:5px; background:#e74c3c; color:white; cursor:pointer; }
   </style>
 </head>
 <body>
   <canvas id="gameCanvas"></canvas>
-  <div id="joystick-container"></div>
-  <button id="fire-button">شلیک</button>
+  <div id="hud"><div id="hp-fill"></div></div>
+  <div id="heal-count">Heal‌ها: 0</div>
+  <div id="music-control"><button id="toggle-music">موسیقی روشن</button></div>
+  <audio id="bg-music" loop src="https://example.com/background.mp3"></audio>
+  <div id="game-over">باختی!<br><button id="restart-btn">دوباره بازی کن</button></div>
+  <div id="move-joystick-container"></div>
+  <div id="aim-joystick-container"></div>
   <div id="credit">ساخته شده توسط Rob Lucci</div>  <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.7.3/nipplejs.min.js"></script>  <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
+    const canvas = document.getElementById('gameCanvas'), ctx = canvas.getContext('2d');
+    const hpFill = document.getElementById('hp-fill');
+    const healCountDiv = document.getElementById('heal-count');
+    const musicBtn = document.getElementById('toggle-music');
+    const bgMusic = document.getElementById('bg-music');
+    const gameOverDiv = document.getElementById('game-over'), restartBtn = document.getElementById('restart-btn');
+    function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+    window.addEventListener('resize', resize); resize();
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    const isMobile = 'ontouchstart' in window;
+    const moveContainer = document.getElementById('move-joystick-container');
+    const aimContainer = document.getElementById('aim-joystick-container');
+    let moveManager, aimManager;
+    const moveData = {x:0,y:0}, aimData = {x:0,y:0};
+    let lastShot = 0, shotInterval = 300, isGameOver = false;
+    let keys = {}, mouseX=canvas.width/2, mouseY=canvas.height/2;
+
+    // Heal items
+    const heals = [], maxHeals=3;
+    let healCount=0;
+    function spawnHeal(){ if(heals.length>=maxHeals) return;
+      const x = Math.random()*(canvas.width-20), y = Math.random()*(canvas.height-20);
+      heals.push({x,y,size:10});
     }
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
+    setInterval(spawnHeal,5000);
 
-    const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    const joystickContainer = document.getElementById("joystick-container");
-    const fireButton = document.getElementById("fire-button");
-    let joystickManager;
-    let joystickData = { x: 0, y: 0 };
-    let mouseX = 0, mouseY = 0;
+    // Music control
+    musicBtn.addEventListener('click',()=>{
+      if(bgMusic.paused){ bgMusic.play(); musicBtn.textContent='موسیقی خاموش'; }
+      else { bgMusic.pause(); musicBtn.textContent='موسیقی روشن'; }
+    });
 
-    if (isMobile) {
-      joystickContainer.style.display = "block";
-      fireButton.style.display = "block";
-      joystickManager = nipplejs.create({
-        zone: joystickContainer,
-        mode: "static",
-        position: { left: "75px", top: "75px" },
-        color: "white",
-      });
-      joystickManager.on("move", (evt, data) => {
-        if (data && data.vector) {
-          joystickData.x = data.vector.x;
-          joystickData.y = data.vector.y;
-        }
-      });
-      joystickManager.on("end", () => {
-        joystickData.x = 0;
-        joystickData.y = 0;
-      });
-      fireButton.addEventListener("touchstart", shoot);
+    if(isMobile){
+      moveContainer.style.display=aimContainer.style.display='block';
+      moveManager = nipplejs.create({zone:moveContainer,mode:'static',position:{left:'75px',top:'75px'},color:'white'});
+      aimManager  = nipplejs.create({zone:aimContainer, mode:'static',position:{right:'75px',top:'75px'},color:'yellow'});
+      moveManager.on('move',(_,d)=>{if(d&&d.vector){moveData.x=d.vector.x;moveData.y=d.vector.y;}});
+      moveManager.on('end',()=>{moveData.x=moveData.y=0;});
+      aimManager.on('move',(_,d)=>{if(d&&d.vector){aimData.x=d.vector.x;aimData.y=d.vector.y;shoot();}});
+      aimManager.on('end',()=>{aimData.x=aimData.y=0;});
     } else {
-      canvas.addEventListener("click", shoot);
-      canvas.addEventListener("mousemove", e => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-      });
+      window.addEventListener('keydown',e=>{keys[e.key]=true; if(e.key===' ') shoot();});
+      window.addEventListener('keyup',e=>keys[e.key]=false);
+      window.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;});
+      window.addEventListener('click',shoot);
     }
 
-    const player = {
-      x: canvas.width / 2,
-      y: canvas.height / 2,
-      size: 20,
-      color: "lime",
-      speed: 3,
-    };
+    const playerTemplate=()=>({x:canvas.width/2,y:canvas.height/2,size:20,color:'lime',speed:3,hp:100});
+    let player = playerTemplate();
+    const bots=[] , bullets=[] , enemyBullets=[];
 
-    const bots = [];
-    for (let i = 0; i < 5; i++) {
-      bots.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: 20,
-        color: "red",
-        speed: 1.5,
-        dx: 1,
-        dy: 1,
-        hp: 3
-      });
+    function init(){
+      player=playerTemplate(); isGameOver=false;
+      gameOverDiv.style.display='none'; healCount=0; healCountDiv.textContent='Heal‌ها: 0';
+      hpFill.style.width=player.hp+'%'; heals.length=0; bots.length=bullets.length=enemyBullets.length=0;
+      for(let i=0;i<5;i++){ let x,y; do{ x=Math.random()*canvas.width; y=Math.random()*canvas.height; }while(Math.hypot(x-player.x,y-player.y)<150);
+        bots.push({x,y,size:20,color:'red',speed:1.5,dx:1,dy:1,hp:50,lastShot:0}); }
+    }
+    init();
+
+    function shoot(){ if(isGameOver) return; const now=Date.now(); if(now-lastShot<shotInterval) return; lastShot=now;
+      let angle = isMobile?(Math.atan2(aimData.y,aimData.x)):(Math.atan2(mouseY-player.y,mouseX-player.x));
+      const speed=6; bullets.push({x:player.x,y:player.y,dx:Math.cos(angle)*speed,dy:Math.sin(angle)*speed,size:5,color:'yellow'});
     }
 
-    const bullets = [];
-
-    function shoot() {
-      const angle = isMobile
-        ? Math.atan2(joystickData.y, joystickData.x)
-        : Math.atan2(mouseY - player.y, mouseX - player.x);
-      const speed = 6;
-      bullets.push({
-        x: player.x,
-        y: player.y,
-        dx: Math.cos(angle) * speed,
-        dy: Math.sin(angle) * speed,
-        size: 5,
-        color: "yellow",
-      });
-    }
-
-    const keys = {};
-    window.addEventListener("keydown", e => { if (!isMobile) keys[e.key] = true; });
-    window.addEventListener("keyup",   e => { if (!isMobile) keys[e.key] = false; });
-
-    function updatePlayer() {
-      if (isMobile) {
-        player.x += joystickData.x * player.speed * 2;
-        player.y += joystickData.y * player.speed * 2;
-      } else {
-        if (keys["w"]) player.y -= player.speed;
-        if (keys["s"]) player.y += player.speed;
-        if (keys["a"]) player.x -= player.speed;
-        if (keys["d"]) player.x += player.speed;
-      }
-      player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
-      player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
-    }
-
-    function updateBots() {
-      bots.forEach(bot => {
-        const dx = player.x - bot.x;
-        const dy = player.y - bot.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-
-        if (dist < bot.size + player.size) {
-          // جلوگیری از همپوشانی کامل
-          const angle = Math.atan2(dy, dx);
-          bot.x -= Math.cos(angle) * 2;
-          bot.y -= Math.sin(angle) * 2;
-        } else if (dist < 200) {
-          bot.x += bot.speed * Math.sign(dx);
-          bot.y += bot.speed * Math.sign(dy);
-        } else {
-          bot.x += bot.speed * bot.dx;
-          bot.y += bot.speed * bot.dy;
-          if (Math.random() < 0.01) bot.dx *= -1;
-          if (Math.random() < 0.01) bot.dy *= -1;
-        }
-
-        bot.x = Math.max(bot.size, Math.min(canvas.width - bot.size, bot.x));
-        bot.y = Math.max(bot.size, Math.min(canvas.height - bot.size, bot.y));
-      });
-    }
-
-    function updateBullets() {
-      for (let i = bullets.length - 1; i >= 0; i--) {
-        const b = bullets[i];
-        b.x += b.dx;
-        b.y += b.dy;
-
-        for (let j = bots.length - 1; j >= 0; j--) {
-          const bot = bots[j];
-          const dx = b.x - bot.x;
-          const dy = b.y - bot.y;
-          const dist = Math.sqrt(dx*dx + dy*dy);
-          if (dist < bot.size) {
-            bot.hp--; bullets.splice(i, 1);
-            if (bot.hp <= 0) bots.splice(j, 1);
-            break;
-          }
-        }
-
-        if (!bullets[i]) continue;
-        if (b.x < 0 || b.y < 0 || b.x > canvas.width || b.y > canvas.height) bullets.splice(i, 1);
+    function updatePlayer(){ if(isMobile){player.x+=moveData.x*player.speed*2;player.y+=moveData.y*player.speed*2;}else{
+        if(keys['w']) player.y-=player.speed; if(keys['s']) player.y+=player.speed;
+        if(keys['a']) player.x-=player.speed; if(keys['d']) player.x+=player.speed; }
+      player.x=Math.max(player.size,Math.min(canvas.width-player.size,player.x));
+      player.y=Math.max(player.size,Math.min(canvas.height-player.size,player.y));
+      // collect heals
+      for(let i=heals.length-1;i>=0;i--){ const h=heals[i]; const d=Math.hypot(player.x-h.x,player.y-h.y);
+        if(d<player.size){ heals.splice(i,1); player.hp=Math.min(100,player.hp+30); hpFill.style.width=player.hp+'%'; healCount++; healCountDiv.textContent='Heal‌ها: '+healCount; }
       }
     }
-
-    function drawCircle(x, y, size, color) {
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI*2);
-      ctx.fill();
+    function updateBots(){ bots.forEach(bot=>{ const dx=player.x-bot.x,dy=player.y-bot.y,dist=Math.hypot(dx,dy),minD=bot.size+player.size;
+        if(dist<minD){ const ang=Math.atan2(dy,dx),ov=minD-dist; bot.x-=Math.cos(ang)*ov; bot.y-=Math.sin(ang)*ov; }
+        if(dist<200&&dist>=minD){bot.x+=bot.speed*Math.sign(dx);bot.y+=bot.speed*Math.sign(dy);}if(dist>=200){bot.x+=bot.speed*bot.dx;bot.y+=bot.speed*bot.dy;if(Math.random()<.01)bot.dx*=-1;if(Math.random()<.01)bot.dy*=-1;}
+        bot.x=Math.max(bot.size,Math.min(canvas.width-bot.size,bot.x));bot.y=Math.max(bot.size,Math.min(canvas.height-bot.size,bot.y));
+        const now=Date.now(); if(dist<250&&now-bot.lastShot>1000){bot.lastShot=now; const ang=Math.atan2(dy,dx),s=4; enemyBullets.push({x:bot.x,y:bot.y,dx:Math.cos(ang)*s,dy:Math.sin(ang)*s,size:4,color:'orange'});} }); }
+    function updateBullets(){ for(let i=bullets.length-1;i>=0;i--){const b=bullets[i];b.x+=b.dx;b.y+=b.dy;
+        for(let j=bots.length-1;j>=0;j--){const bot=bots[j],d=Math.hypot(b.x-bot.x,b.y-bot.y);if(d<bot.size){bot.hp-=20;bullets.splice(i,1);if(bot.hp<=0)bots.splice(j,1);break;}}
+        if(!bullets[i]) continue; if(b.x<0||b.y<0||b.x>canvas.width||b.y>canvas.height) bullets.splice(i,1);
+      } for(let i=enemyBullets.length-1;i>=0;i--){const b=enemyBullets[i];b.x+=b.dx;b.y+=b.dy;const d=Math.hypot(b.x-player.x,b.y-player.y);
+        if(d<player.size){player.hp-=10;enemyBullets.splice(i,1);hpFill.style.width=player.hp+'%';if(player.hp<=0) endGame();continue;}if(b.x<0||b.y<0||b.x>canvas.width||b.y>canvas.height)enemyBullets.splice(i,1);} }
+    function draw(){ if(isGameOver) return; ctx.clearRect(0,0,canvas.width,canvas.height);
+      updatePlayer(); updateBots(); updateBullets();
+      // draw heals
+      heals.forEach(h=>{ctx.fillStyle='hotpink';ctx.beginPath();ctx.arc(h.x,h.y,h.size,0,Math.PI*2);ctx.fill();});
+      // draw aim
+      if(isMobile&&(aimData.x||aimData.y)){const len=player.size*1.5,ax=player.x+aimData.x*len,ay=player.y+aimData.y*len;ctx.strokeStyle='rgba(255,255,0,0.7)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(player.x,player.y);ctx.lineTo(ax,ay);ctx.stroke();ctx.beginPath();ctx.arc(ax,ay,5,0,Math.PI*2);ctx.fillStyle='yellow';ctx.fill();}
+      // draw player
+      ctx.fillStyle=player.color;ctx.beginPath();ctx.arc(player.x,player.y,player.size,0,Math.PI*2);ctx.fill();
+      // draw bots
+      bots.forEach(b=>{ctx.fillStyle=b.color;ctx.beginPath();ctx.arc(b.x,b.y,b.size,0,Math.PI*2);ctx.fill();});
+      // draw bullets
+      bullets.forEach(b=>{ctx.fillStyle=b.color;ctx.beginPath();ctx.arc(b.x,b.y,b.size,0,Math.PI*2);ctx.fill();});
+      // draw enemy bullets
+      enemyBullets.forEach(b=>{ctx.fillStyle=b.color;ctx.beginPath();ctx.arc(b.x,b.y,b.size,0,Math.PI*2);ctx.fill();});
+      requestAnimationFrame(draw);
     }
-
-    function gameLoop() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      updatePlayer();
-      updateBots();
-      updateBullets();
-      drawCircle(player.x, player.y, player.size, player.color);
-      bots.forEach(bot => drawCircle(bot.x, bot.y, bot.size, bot.color));
-      bullets.forEach(b => drawCircle(b.x, b.y, b.size, b.color));
-      requestAnimationFrame(gameLoop);
-    }
-
-    gameLoop();
+    function endGame(){isGameOver=true;gameOverDiv.style.display='block';}
+    restartBtn.addEventListener('click',init);
+    draw();
   </script></body>
 </html>
