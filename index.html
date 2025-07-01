@@ -5,8 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Battle Royale 2D</title>
   <style>
-    body { margin: 0; overflow: hidden; background: #202020; position: relative; }
-    canvas { display: block; margin: 0 auto; background: #333; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #202020;
+      touch-action: none;
+    }
+    canvas {
+      display: block;
+      background: #333;
+      touch-action: none;
+    }
     #joystick-container {
       position: absolute;
       bottom: 20px;
@@ -15,6 +25,7 @@
       height: 150px;
       display: none;
       z-index: 10;
+      touch-action: none;
     }
     #fire-button {
       position: absolute;
@@ -30,36 +41,53 @@
       display: none;
       z-index: 10;
     }
+    #credit {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      color: #aaa;
+      font-family: sans-serif;
+      font-size: 14px;
+      z-index: 5;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <canvas id="gameCanvas"></canvas>
   <div id="joystick-container"></div>
   <button id="fire-button">شلیک</button>
+  <div id="credit">ساخته شده توسط Rob Lucci</div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.7.3/nipplejs.min.js"></script>
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    // شناسایی موبایل
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
     const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     const joystickContainer = document.getElementById("joystick-container");
     const fireButton = document.getElementById("fire-button");
     let joystickManager;
     let joystickData = { x: 0, y: 0 };
-    let shooting = false;
+    let mouseX = 0, mouseY = 0;
 
     if (isMobile) {
       joystickContainer.style.display = "block";
       fireButton.style.display = "block";
-
       joystickManager = nipplejs.create({
         zone: joystickContainer,
         mode: "static",
         position: { left: "75px", top: "75px" },
         color: "white",
       });
-
       joystickManager.on("move", (evt, data) => {
         joystickData.x = data.vector.x;
         joystickData.y = data.vector.y;
@@ -68,12 +96,23 @@
         joystickData.x = 0;
         joystickData.y = 0;
       });
-
-      fireButton.addEventListener("touchstart", () => (shooting = true));
-      fireButton.addEventListener("touchend", () => (shooting = false));
+      fireButton.addEventListener("touchstart", shoot);
+    } else {
+      canvas.addEventListener("click", shoot);
+      canvas.addEventListener("mousemove", e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
     }
 
-    const player = { x: 400, y: 300, size: 20, color: "lime", speed: 3 };
+    const player = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      size: 20,
+      color: "lime",
+      speed: 3,
+    };
+
     const bots = [];
     for (let i = 0; i < 5; i++) {
       bots.push({
@@ -84,38 +123,51 @@
         speed: 1.5,
         dx: 1,
         dy: 1,
+        hp: 3
+      });
+    }
+
+    const bullets = [];
+
+    function shoot() {
+      const angle = isMobile
+        ? Math.atan2(joystickData.y, joystickData.x)
+        : Math.atan2(mouseY - player.y, mouseX - player.x);
+      const speed = 6;
+      bullets.push({
+        x: player.x,
+        y: player.y,
+        dx: Math.cos(angle) * speed,
+        dy: Math.sin(angle) * speed,
+        size: 5,
+        color: "yellow",
       });
     }
 
     const keys = {};
     window.addEventListener("keydown", (e) => { if (!isMobile) keys[e.key] = true; });
-    window.addEventListener("keyup", (e) => { if (!isMobile) keys[e.key] = false; });
+    window.addEventListener("keyup",   (e) => { if (!isMobile) keys[e.key] = false; });
 
     function updatePlayer() {
       if (isMobile) {
-        player.x += joystickData.x * player.speed;
-        player.y += joystickData.y * player.speed;
-        if (shooting) {
-          // تو این نسخه شلیک نداره، ولی اینجا می‌تونه صدا یا انیمیشن بیاد
-          console.log("شلیک با دکمه موبایل");
-        }
+        player.x += joystickData.x * player.speed * 2;
+        player.y += joystickData.y * player.speed * 2;
       } else {
         if (keys["w"]) player.y -= player.speed;
         if (keys["s"]) player.y += player.speed;
         if (keys["a"]) player.x -= player.speed;
         if (keys["d"]) player.x += player.speed;
       }
-
-      // محدود به بوم
+      // محدود کردن داخل صفحه
       player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
       player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
     }
 
     function updateBots() {
-      bots.forEach((bot) => {
+      bots.forEach(bot => {
         const dx = player.x - bot.x;
         const dy = player.y - bot.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const dist = Math.sqrt(dx*dx + dy*dy);
         if (dist < 200) {
           bot.x += bot.speed * Math.sign(dx);
           bot.y += bot.speed * Math.sign(dy);
@@ -125,10 +177,38 @@
           if (Math.random() < 0.01) bot.dx *= -1;
           if (Math.random() < 0.01) bot.dy *= -1;
         }
-
         bot.x = Math.max(bot.size, Math.min(canvas.width - bot.size, bot.x));
         bot.y = Math.max(bot.size, Math.min(canvas.height - bot.size, bot.y));
       });
+    }
+
+    function updateBullets() {
+      // حلقه معکوس برای حذف ایمن
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        const b = bullets[i];
+        b.x += b.dx;
+        b.y += b.dy;
+
+        // برخورد و حذف
+        for (let j = bots.length - 1; j >= 0; j--) {
+          const bot = bots[j];
+          const dx = b.x - bot.x;
+          const dy = b.y - bot.y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < bot.size) {
+            bot.hp--;
+            bullets.splice(i, 1);
+            if (bot.hp <= 0) bots.splice(j, 1);
+            break;
+          }
+        }
+
+        // حذف تیرهای خارج از صفحه
+        if (!bullets[i]) continue; // اگر قبلاً حذف شده
+        if (b.x < 0 || b.y < 0 || b.x > canvas.width || b.y > canvas.height) {
+          bullets.splice(i, 1);
+        }
+      }
     }
 
     function drawCircle(x, y, size, color) {
@@ -142,12 +222,14 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       updatePlayer();
       updateBots();
+      updateBullets();
       drawCircle(player.x, player.y, player.size, player.color);
-      bots.forEach((bot) => drawCircle(bot.x, bot.y, bot.size, bot.color));
+      bots.forEach(bot => drawCircle(bot.x, bot.y, bot.size, bot.color));
+      bullets.forEach(b => drawCircle(b.x, b.y, b.size, b.color));
       requestAnimationFrame(gameLoop);
     }
 
     gameLoop();
   </script>
 </body>
-</html>
+    </html>
