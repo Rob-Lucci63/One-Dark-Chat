@@ -1,45 +1,153 @@
-<!DOCTYPE html><html lang="fa">
+<!DOCTYPE html>
+<html lang="fa">
 <head>
-  <meta charset="UTF-8">
-  <title>Mini Battle Royale</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battle Royale 2D</title>
   <style>
     body { margin: 0; overflow: hidden; background: #202020; position: relative; }
     canvas { display: block; margin: 0 auto; background: #333; }
-    /* joystick UI */
-    #joystick-container { position: absolute; bottom: 20px; left: 20px; width: 150px; height: 150px; display: none; }
-    #fire-button { position: absolute; bottom: 40px; right: 20px; width: 60px; height: 60px; border-radius: 30px; background: #e74c3c; color: #fff; font-size: 18px; border: none; display: none; }
+    #joystick-container {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 150px;
+      height: 150px;
+      display: none;
+      z-index: 10;
+    }
+    #fire-button {
+      position: absolute;
+      bottom: 40px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 30px;
+      background: #e74c3c;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      display: none;
+      z-index: 10;
+    }
   </style>
 </head>
 <body>
-<canvas id="gameCanvas" width="800" height="600"></canvas>
-<div id="joystick-container"></div>
-<button id="fire-button">Shoot</button>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.7.3/nipplejs.min.js"></script>
-<script>
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");// detect mobile const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0; const joystickContainer = document.getElementById('joystick-container'); const fireButton = document.getElementById('fire-button'); let joystickManager; let joystickData = { x: 0, y: 0 }; let shooting = false;
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <div id="joystick-container"></div>
+  <button id="fire-button">شلیک</button>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.7.3/nipplejs.min.js"></script>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-if (isMobile) { joystickContainer.style.display = 'block'; fireButton.style.display = 'block';
+    // شناسایی موبایل
+    const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const joystickContainer = document.getElementById("joystick-container");
+    const fireButton = document.getElementById("fire-button");
+    let joystickManager;
+    let joystickData = { x: 0, y: 0 };
+    let shooting = false;
 
-// init nipplejs joystick joystickManager = nipplejs.create({ zone: joystickContainer, mode: 'static', position: { left: '75px', top: '75px' }, color: 'white', });
+    if (isMobile) {
+      joystickContainer.style.display = "block";
+      fireButton.style.display = "block";
 
-joystickManager.on('move', (evt, data) => { joystickData.x = data.vector.x; joystickData.y = data.vector.y; }); joystickManager.on('end', () => { joystickData.x = 0; joystickData.y = 0; });
+      joystickManager = nipplejs.create({
+        zone: joystickContainer,
+        mode: "static",
+        position: { left: "75px", top: "75px" },
+        color: "white",
+      });
 
-fireButton.addEventListener('touchstart', () => { shooting = true; }); fireButton.addEventListener('touchend', () => { shooting = false; }); }
+      joystickManager.on("move", (evt, data) => {
+        joystickData.x = data.vector.x;
+        joystickData.y = data.vector.y;
+      });
+      joystickManager.on("end", () => {
+        joystickData.x = 0;
+        joystickData.y = 0;
+      });
 
-// player and bots const player = { x: 400, y: 300, size: 20, color: 'lime', speed: 3 }; const bots = []; for (let i = 0; i < 5; i++) { bots.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size:20, color:'red', speed:1.5, dx:1, dy:1 }); }
+      fireButton.addEventListener("touchstart", () => (shooting = true));
+      fireButton.addEventListener("touchend", () => (shooting = false));
+    }
 
-const keys = {}; window.addEventListener('keydown', e => { if (!isMobile) keys[e.key] = true; }); window.addEventListener('keyup', e => { if (!isMobile) keys[e.key] = false; });
+    const player = { x: 400, y: 300, size: 20, color: "lime", speed: 3 };
+    const bots = [];
+    for (let i = 0; i < 5; i++) {
+      bots.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: 20,
+        color: "red",
+        speed: 1.5,
+        dx: 1,
+        dy: 1,
+      });
+    }
 
-function updatePlayer() { if (isMobile) { // mobile: use joystick data player.x += joystickData.x * player.speed; player.y += joystickData.y * player.speed; if (shooting) { // placeholder for shoot action console.log('shoot'); } } else { // desktop: keyboard controls if (keys['w']) player.y -= player.speed; if (keys['s']) player.y += player.speed; if (keys['a']) player.x -= player.speed; if (keys['d']) player.x += player.speed; } // clamp within canvas player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x)); player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y)); }
+    const keys = {};
+    window.addEventListener("keydown", (e) => { if (!isMobile) keys[e.key] = true; });
+    window.addEventListener("keyup", (e) => { if (!isMobile) keys[e.key] = false; });
 
-function updateBots() { bots.forEach(bot => { const dx = player.x - bot.x; const dy = player.y - bot.y; const dist = Math.sqrt(dxdx + dydy); if (dist < 200) { bot.x += bot.speed * Math.sign(dx); bot.y += bot.speed * Math.sign(dy); } else { bot.x += bot.speed * bot.dx; bot.y += bot.speed * bot.dy; if (Math.random() < 0.01) bot.dx *= -1; if (Math.random() < 0.01) bot.dy *= -1; } // clamp bots bot.x = Math.max(bot.size, Math.min(canvas.width - bot.size, bot.x)); bot.y = Math.max(bot.size, Math.min(canvas.height - bot.size, bot.y)); }); }
+    function updatePlayer() {
+      if (isMobile) {
+        player.x += joystickData.x * player.speed;
+        player.y += joystickData.y * player.speed;
+        if (shooting) {
+          // تو این نسخه شلیک نداره، ولی اینجا می‌تونه صدا یا انیمیشن بیاد
+          console.log("شلیک با دکمه موبایل");
+        }
+      } else {
+        if (keys["w"]) player.y -= player.speed;
+        if (keys["s"]) player.y += player.speed;
+        if (keys["a"]) player.x -= player.speed;
+        if (keys["d"]) player.x += player.speed;
+      }
 
-function drawCircle(x,y,size,color) { ctx.fillStyle=color; ctx.beginPath(); ctx.arc(x,y,size,0,Math.PI*2); ctx.fill(); }
+      // محدود به بوم
+      player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
+      player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
+    }
 
-function gameLoop() { ctx.clearRect(0,0,canvas.width,canvas.height); updatePlayer(); updateBots(); drawCircle(player.x, player.y, player.size, player.color); bots.forEach(bot => drawCircle(bot.x, bot.y, bot.size, bot.color)); requestAnimationFrame(gameLoop); }
+    function updateBots() {
+      bots.forEach((bot) => {
+        const dx = player.x - bot.x;
+        const dy = player.y - bot.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 200) {
+          bot.x += bot.speed * Math.sign(dx);
+          bot.y += bot.speed * Math.sign(dy);
+        } else {
+          bot.x += bot.speed * bot.dx;
+          bot.y += bot.speed * bot.dy;
+          if (Math.random() < 0.01) bot.dx *= -1;
+          if (Math.random() < 0.01) bot.dy *= -1;
+        }
 
-gameLoop(); </script>
+        bot.x = Math.max(bot.size, Math.min(canvas.width - bot.size, bot.x));
+        bot.y = Math.max(bot.size, Math.min(canvas.height - bot.size, bot.y));
+      });
+    }
 
+    function drawCircle(x, y, size, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      updatePlayer();
+      updateBots();
+      drawCircle(player.x, player.y, player.size, player.color);
+      bots.forEach((bot) => drawCircle(bot.x, bot.y, bot.size, bot.color));
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+  </script>
 </body>
 </html>
