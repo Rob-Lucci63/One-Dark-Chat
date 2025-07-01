@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="fa">
+<!DOCTYPE html><html lang="fa">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -58,10 +57,7 @@
   <canvas id="gameCanvas"></canvas>
   <div id="joystick-container"></div>
   <button id="fire-button">شلیک</button>
-  <div id="credit">ساخته شده توسط Rob Lucci</div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.7.3/nipplejs.min.js"></script>
-  <script>
+  <div id="credit">ساخته شده توسط Rob Lucci</div>  <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.7.3/nipplejs.min.js"></script>  <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -89,8 +85,10 @@
         color: "white",
       });
       joystickManager.on("move", (evt, data) => {
-        joystickData.x = data.vector.x;
-        joystickData.y = data.vector.y;
+        if (data && data.vector) {
+          joystickData.x = data.vector.x;
+          joystickData.y = data.vector.y;
+        }
       });
       joystickManager.on("end", () => {
         joystickData.x = 0;
@@ -145,8 +143,8 @@
     }
 
     const keys = {};
-    window.addEventListener("keydown", (e) => { if (!isMobile) keys[e.key] = true; });
-    window.addEventListener("keyup",   (e) => { if (!isMobile) keys[e.key] = false; });
+    window.addEventListener("keydown", e => { if (!isMobile) keys[e.key] = true; });
+    window.addEventListener("keyup",   e => { if (!isMobile) keys[e.key] = false; });
 
     function updatePlayer() {
       if (isMobile) {
@@ -158,7 +156,6 @@
         if (keys["a"]) player.x -= player.speed;
         if (keys["d"]) player.x += player.speed;
       }
-      // محدود کردن داخل صفحه
       player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
       player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
     }
@@ -168,7 +165,13 @@
         const dx = player.x - bot.x;
         const dy = player.y - bot.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < 200) {
+
+        if (dist < bot.size + player.size) {
+          // جلوگیری از همپوشانی کامل
+          const angle = Math.atan2(dy, dx);
+          bot.x -= Math.cos(angle) * 2;
+          bot.y -= Math.sin(angle) * 2;
+        } else if (dist < 200) {
           bot.x += bot.speed * Math.sign(dx);
           bot.y += bot.speed * Math.sign(dy);
         } else {
@@ -177,44 +180,39 @@
           if (Math.random() < 0.01) bot.dx *= -1;
           if (Math.random() < 0.01) bot.dy *= -1;
         }
+
         bot.x = Math.max(bot.size, Math.min(canvas.width - bot.size, bot.x));
         bot.y = Math.max(bot.size, Math.min(canvas.height - bot.size, bot.y));
       });
     }
 
     function updateBullets() {
-      // حلقه معکوس برای حذف ایمن
       for (let i = bullets.length - 1; i >= 0; i--) {
         const b = bullets[i];
         b.x += b.dx;
         b.y += b.dy;
 
-        // برخورد و حذف
         for (let j = bots.length - 1; j >= 0; j--) {
           const bot = bots[j];
           const dx = b.x - bot.x;
           const dy = b.y - bot.y;
           const dist = Math.sqrt(dx*dx + dy*dy);
           if (dist < bot.size) {
-            bot.hp--;
-            bullets.splice(i, 1);
+            bot.hp--; bullets.splice(i, 1);
             if (bot.hp <= 0) bots.splice(j, 1);
             break;
           }
         }
 
-        // حذف تیرهای خارج از صفحه
-        if (!bullets[i]) continue; // اگر قبلاً حذف شده
-        if (b.x < 0 || b.y < 0 || b.x > canvas.width || b.y > canvas.height) {
-          bullets.splice(i, 1);
-        }
+        if (!bullets[i]) continue;
+        if (b.x < 0 || b.y < 0 || b.x > canvas.width || b.y > canvas.height) bullets.splice(i, 1);
       }
     }
 
     function drawCircle(x, y, size, color) {
       ctx.fillStyle = color;
       ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.arc(x, y, size, 0, Math.PI*2);
       ctx.fill();
     }
 
@@ -230,6 +228,5 @@
     }
 
     gameLoop();
-  </script>
-</body>
-    </html>
+  </script></body>
+</html>
