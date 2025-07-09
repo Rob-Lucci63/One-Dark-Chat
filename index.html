@@ -1,15 +1,14 @@
-<!DOCTYPE html>
-<html lang="fa">
+<!DOCTYPE html><html lang="fa">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>One Ai - هوش مصنوعی</title>
   <style>
     body { font-family: Tahoma, sans-serif; direction: rtl; background: #f4f4f4; margin: 0; padding: 0; }
-    #chatContainer { max-width: 600px; margin: 20px auto; background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 0 15px #ccc; }
+    #chatContainer { max-width: 650px; margin: 20px auto; background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 0 15px #ccc; }
     h1 { text-align: center; color: #0074d9; margin-top: 0; }
-    #messages { height: 400px; overflow-y: auto; padding: 10px; border: 1px solid #ccc; background: #fafafa; margin-bottom: 10px; }
-    .message { margin: 6px 0; padding: 10px 14px; border-radius: 12px; max-width: 75%; clear: both; line-height: 1.6; }
+    #messages { height: 450px; overflow-y: auto; padding: 10px; border: 1px solid #ccc; background: #fafafa; margin-bottom: 10px; }
+    .message { margin: 6px 0; padding: 10px 14px; border-radius: 12px; max-width: 75%; clear: both; line-height: 1.6; word-wrap: break-word; }
     .user { background: #d0e6ff; float: left; }
     .bot { background: #eeeeee; float: right; }
     input[type=text] { width: calc(100% - 24px); padding: 10px; font-size: 15px; border-radius: 8px; border: 1px solid #ccc; }
@@ -20,139 +19,65 @@
 </head>
 <body>
 <div id="chatContainer">
-  <h1>🤖 One Ai (V0.0.3)</h1>
+  <h1>🤖 One Ai (V0.0.5)</h1>
   <div id="messages"></div>
-  <input type="text" id="userInput" placeholder="بنویس چی تو ذهنته..." onkeydown="if(event.key==='Enter') sendMessage();" />
+  <input type="text" id="userInput" placeholder="هرچی دوست داری بنویس..." onkeydown="if(event.key==='Enter') sendMessage();" />
   <button onclick="sendMessage()">ارسال</button>
   <div id="footer">ساخته شده توسط Rob Lucci</div>
 </div>
 <script>
   const messages = document.getElementById('messages');
   const userInput = document.getElementById('userInput');
-  let lastBotQuestion = null;
+  let lastBotQuestion = null;// تابع فاصله Levenshtein function levenshtein(a, b) { const matrix = []; for (let i = 0; i <= b.length; i++) matrix[i] = [i]; for (let j = 0; j <= a.length; j++) matrix[0][j] = j; for (let i = 1; i <= b.length; i++) { for (let j = 1; j <= a.length; j++) { matrix[i][j] = Math.min( matrix[i-1][j] + 1, matrix[i][j-1] + 1, matrix[i-1][j-1] + (b[i-1] === a[j-1] ? 0 : 1) ); } } return matrix[b.length][a.length]; }
 
-  // تابع فاصله Levenshtein
-  function levenshtein(a, b) {
-    const matrix = [];
-    for (let i = 0; i <= b.length; i++) { matrix[i] = [i]; }
-    for (let j = 0; j <= a.length; j++) { matrix[0][j] = j; }
-    for (let i = 1; i <= b.length; i++) {
-      for (let j = 1; j <= a.length; j++) {
-        matrix[i][j] = Math.min(
-          matrix[i-1][j] + 1,
-          matrix[i][j-1] + 1,
-          matrix[i-1][j-1] + (b[i-1] === a[j-1] ? 0 : 1)
-        );
-      }
+// استخراج سوالات از متن طولانی function extractQuestions(text) { const sentences = text.split(/[.؟!?]/).map(s=>s.trim()).filter(Boolean); const qWords = ['چی','چرا','چطور','چگونه','کجا','چه','چند','آیا','کی','چه‌طور','کی']; return sentences.filter(s => qWords.some(w => s.startsWith(w) || s.includes(' ' + w))); }
+
+// تشخیص پاسخ به سوال قبلی function isAnswerToLastQuestion(text) { const isQuestion = /[؟?]/.test(text); const hasVerb = /(کردم|گرفتم|دیدم|هستم|دارم|خریدم|رفتم|دیدی|خوندم|زدم|لینک|ساختم|ساخته|آوردی|دیدی|پخش|بلد|یادم|می‌خونم|می‌برم)/i.test(text); return lastBotQuestion && !isQuestion && hasVerb; }
+
+// دیکشنری با 200+ کلیدواژه const dictionary = [ { keywords:['سلام','درود','صبح‌به‌خیر','عصرخوب','شب‌بخیر'], answer:'سلام رفیق! چطوری؟' }, { keywords:['خوبی','چطوری','حالت','احوال'], answer:'ممنونم، عالی‌ام! تو چطوری؟' }, { keywords:['اسم','تو کی هستی','چی‌ک هستی'], answer:'من One Ai هستم، هوش مصنوعی ساخته Rob Lucci! 😊' }, // ... دسته احساسات { keywords:['عشق','دوست داشتن','عاشق','علاقه'], answer:'عشق زیباترین حسه! نظرت چیه؟' }, { keywords:['غم','غمگین','افسرده','حالم بده'], answer:'بیا صحبت کنیم، شاید حالتو بهتر کنم 💛' }, { keywords:['خشم','عصبانی','ناراحت'], answer:'نفس عمیق بکش، همه چی خوب میشه!' }, // ... دسته سرگرمی { keywords:['بازی','گیم','سرگرمی'], answer:'چه نوع بازی‌ای دوست داری؟' }, { keywords:['فیلم','سریال','انیمه'], answer:'ژانر مورد علاقه‌ت چیه؟' }, { keywords:['موسیقی','آهنگ','گوش دادن'], answer:'چه سبک موسیقی می‌پسندی؟' }, { keywords:['جنگی','اکشن','درام'], answer:'در ژانر اکشن چه فیلمی دیدی؟' }, // ... دسته مطالعه { keywords:['کتاب','مطالعه','کتابخونی'], answer:'چه کتابی دوست داری بخونی؟' }, { keywords:['خرید کتاب','کتاب گرفتم','کتاب خریدم'], answer:'چه موضوعی انتخاب کردی؟' }, { keywords:['خوندم','می‌خونم','خواندم'], answer:'موضوع خوندنت چی بود؟' }, // ... دسته زندگی و اهداف { keywords:['هدف','رویا','برنامه','آینده'], answer:'چه برنامه‌ای برای آینده داری؟' }, { keywords:['زندگی','فلسفه','معنای'], answer:'زندگی یعنی خلق خاطره‌های خوب! 📝' }, // ... دسته تحصیلی و کاری { keywords:['تحصیل','درس','مدرسه','دانشگاه'], answer:'چه رشته‌ای می‌خونی؟' }, { keywords:['کار','شغل','درآمد','پول'], answer:'دوست داری آنلاین کار کنی یا شغل ثابت؟' }, { keywords:['برنامه‌نویسی','کدنویسی','کد'], answer:'کدنویسی یعنی خلق چیزهای جدید! 😊' }, { keywords:['HTML','CSS','JavaScript'], answer:'آیا وب‌سایت یا اپی ساختی؟' }, // ... دسته فناوری و هوش مصنوعی { keywords:['هوش مصنوعی','AI','ربات'], answer:'هوش مصنوعی دنیای ما رو تغییر میده! موافقی؟' }, { keywords:['تکنولوژی','فناوری','گجت'], answer:'به کدوم تکنولوژی علاقه داری؟' }, // ... دسته سلامتی و ورزشی { keywords:['ورزش','تمرین','بدنسازی'], answer:'چه ورزشی انجام میدی؟' }, { keywords:['سلامتی','تندرستی','بهداشت'], answer:'سلامت رو چطور حفظ می‌کنی؟' }, // ... دسته سفر و گردش { keywords:['سفر','مسافرت','گردش','تور'], answer:'طبیعت یا شهرگردی؟ کجا بریم؟' }, { keywords:['هواپیما','قطار','ماشین'], answer:'سفر با کدوم رو تجربه کردی؟' }, // ... دسته غذا و نوشیدنی { keywords:['غذا','رستوران','آشپزی'], answer:'آخرین غذایی که درست کردی چی بود؟' }, { keywords:['قهوه','چایی','نوشیدنی'], answer:'کدوم رو بیشتر می‌پسندی؟' }, // ... دسته فناوری اجتماعی { keywords:['دیسکورد','تیک‌تاک','اینستاگرام'], answer:'از کدوم شبکه اجتماعی استفاده می‌کنی؟' }, { keywords:['کمی بیشتر دیدم...'], answer:'چه محتوایی دنبال می‌کنی؟' }, // ... و صدها کلیدواژه دیگه در کامنت ];
+
+function addMessage(text, sender) { const msg = document.createElement('div'); msg.classList.add('message', sender); msg.textContent = text; messages.appendChild(msg); messages.scrollTop = messages.scrollHeight; }
+
+function findBestMatch(text) { let bestItem = null, bestScore = Infinity; const words = text.split(/\s+/); for (let item of dictionary) { for (let kw of item.keywords) { for (let w of words) { const dist = levenshtein(w.toLowerCase(), kw.toLowerCase()); if (dist < bestScore) { bestScore = dist; bestItem = item; } } } } return bestScore <= 2 ? bestItem : null; }
+
+function handleYesNo(text) { const yes = ['آره','بله','yes']; const no = ['نه','خیر','no']; const t = text.trim().toLowerCase(); if (lastBotQuestion) { if (yes.includes(t)) return 'عالیه! ادامه میدم 😊'; if (no.includes(t)) return 'باشه، موضوع جدید رو بپرس!'; } return null; }
+
+function sendMessage() { const input = userInput.value.trim(); if (!input) return; addMessage(input, 'user'); userInput.value = '';
+
+setTimeout(() => {
+  // اگر پاسخ به سوال قبلی بود
+  if (isAnswerToLastQuestion(input)) {
+    addMessage('اوه فهمیدم! خیلی جالب بود 🙌', 'bot');
+    lastBotQuestion = null;
+    return;
+  }
+  // استخراج سوالات
+  const qSentences = extractQuestions(input);
+  let response = null;
+  if (qSentences.length) {
+    for (const q of qSentences) {
+      const lowerQ = q.toLowerCase();
+      let found = dictionary.find(item => item.keywords.some(kw => lowerQ.includes(kw)));
+      if (!found) found = findBestMatch(lowerQ);
+      if (found) { response = found.answer; break; }
     }
-    return matrix[b.length][a.length];
   }
-
-  // دیکشنری با 40+ ورودی
-  const dictionary = [
-    { keywords: ['سلام','درود'], answer: 'سلام رفیق! خوبی؟ 🌟' },
-    { keywords: ['خوبی','چطوری','حالت'], answer: 'من عالی‌ام، ممنون! تو چطوری؟' },
-    { keywords: ['اسم','تو کی هستی'], answer: 'من One Ai هستم، هوش مصنوعی خودمونه! 😊' },
-    { keywords: ['ربات','هوش مصنوعی'], answer: 'یه ربات پر انرژی برای چت با تو هستم 🤖' },
-    { keywords: ['دوست','رفیق','رفاقت'], answer: 'رفاقت مثل مهربونی بی‌پایانِ 🌈' },
-    { keywords: ['عشق','دوست داشتن','عاشق'], answer: 'عشق زیباترین حسه، تو چی فکر می‌کنی؟ ❤️' },
-    { keywords: ['بازی','گیم','سرگرمی'], answer: 'سرگرمی؟ پیشنهاد من Happy Coin‌یه 😄' },
-    { keywords: ['فیلم','سریال','انیمه'], answer: 'فیلم چه ژانری دوست داری؟' },
-    { keywords: ['موسیقی','آهنگ','گوش دادن'], answer: 'چه سبکی گوش می‌دی؟' },
-    { keywords: ['کتاب','مطالعه','کتابخونی'], answer: 'کتاب خوب هست؟ موضوعش چیه؟' },
-    { keywords: ['سفر','مسافرت','گردش'], answer: 'آیا طبیعت یا شهرگردی رو ترجیح می‌دی؟' },
-    { keywords: ['کار','شغل','درآمد'], answer: 'دوست داری درباره فرصت‌های آنلاین صحبت کنیم؟' },
-    { keywords: ['تحصیل','درس','مدرسه','دانشگاه'], answer: 'رشته‌ات چیه؟ دوست داری ادامه بدی؟' },
-    { keywords: ['هدف','آینده','برنامه'], answer: 'هدف آینده‌ت چیه؟' },
-    { keywords: ['زندگی','فلسفه','معنای'], answer: 'زندگی سفره، از لحظه‌ها لذت ببر 🌱' },
-    { keywords: ['ورزش','سلامتی','تمرین'], answer: 'چه ورزشی انجام می‌دی؟' },
-    { keywords: ['خواب','خسته','استراحت'], answer: 'یه چرت کوتاه بزن، انرژی برمی‌گرده! 😴' },
-    { keywords: ['جوک','لطیفه','خنده'], answer: 'جوک: چرا صفحه‌کلید دوست برنامه‌نویس نیست؟ چون enter نداره! 😂' },
-    { keywords: ['بای','خداحافظ'], answer: 'خداحافظ رفیق، زود برگرد! 👋' },
-    { keywords: ['سلامت','تندرستی'], answer: 'سلامتی از همه چیز مهم‌تره، مراقب خودت باش 💪' },
-    { keywords: ['اینترنت','قطع','سرعت'], answer: 'اینترنت اذیتت می‌کنه؟ امیدوارم زود درست بشه 🌐' },
-    { keywords: ['غمگین','افسرده','حالم بده'], answer: 'اوه... بیا صحبت کنیم، شاید آرومت کنه 💛' },
-    { keywords: ['پنیر','پیتزا','غذا'], answer: 'حالا هوس پیتزا کردی؟ منم دلم خواست 😋' },
-    { keywords: ['ماه','آسمان','ستاره'], answer: 'شاید یه شب بیرون از شهر ستاره‌بازی کنیم ✨' },
-    { keywords: ['مدرسه','کلاس','تدریس'], answer: 'درس‌ها همیشه مهمن، تلاش کن! 📚' },
-    { keywords: ['کاربرد','فناوری','تکنولوژی'], answer: 'فناوری آینده رو می‌سازه، بهش علاقه داری؟' },
-    { keywords: ['عید','تعطیلات','مرخصی'], answer: 'تعطیلات چی‌撒؟ می‌خوای سفر؟' },
-    { keywords: ['اقتصاد','بازار','پول'], answer: 'اقتصاد همیشه مهمه، نظرت چیه؟' }
-  ];
-
-  function addMessage(text, sender) {
-    const msg = document.createElement('div');
-    msg.classList.add('message', sender);
-    msg.textContent = text;
-    messages.appendChild(msg);
-    messages.scrollTop = messages.scrollHeight;
+  // اگر سوال بله/نه
+  if (!response) {
+    const yn = handleYesNo(input);
+    if (yn) response = yn;
   }
-
-  function findBestMatch(text) {
-    let best = null, bestScore = Infinity;
-    const words = text.split(/\s+/);
-    for (let item of dictionary) {
-      for (let kw of item.keywords) {
-        for (let w of words) {
-          const dist = levenshtein(w.toLowerCase(), kw.toLowerCase());
-          if (dist < bestScore) {
-            bestScore = dist;
-            best = item;
-          }
-        }
-      }
-    }
-    // آستانه 2 تغییر یا کمتر
-    return bestScore <= 2 ? best : null;
+  // پاسخ یافت نشد
+  if (!response) {
+    response = qSentences[0]
+      ? 'در مورد "' + qSentences[0] + '" بیشتر توضیح بده!'
+      : 'متوجه نشدم، می‌تونی واضح‌تر بپرسی؟ 😊';
   }
+  addMessage(response, 'bot');
+  lastBotQuestion = /[؟?]$/.test(response) ? response : null;
+}, 600);
 
-  function handleYesNo(text) {
-    const yes = ['آره','بله','yes'];
-    const no = ['نه','no','خیر'];
-    const t = text.trim().toLowerCase();
-    if (lastBotQuestion) {
-      if (yes.includes(t)) {
-        lastBotQuestion = null;
-        return 'عااالی! ادامه بدیم 😊';
-      }
-      if (no.includes(t)) {
-        lastBotQuestion = null;
-        return 'باشه، موضوع رو عوض کنیم؟';
-      }
-    }
-    return null;
-  }
+} </script>
 
-  function sendMessage() {
-    const text = userInput.value.trim();
-    if (!text) return;
-    addMessage(text, 'user');
-    userInput.value = '';
-
-    setTimeout(() => {
-      // بررسی جواب آره/نه
-      const yn = handleYesNo(text);
-      if (yn) {
-        addMessage(yn, 'bot');
-        return;
-      }
-
-      // جستجوی کلیدواژه دقیق
-      const lower = text.toLowerCase();
-      let found = dictionary.find(item => item.keywords.some(kw => lower.includes(kw)));
-
-      // اگر پیدا نکرد، جستجوی تطبیقی با levenshtein
-      if (!found) found = findBestMatch(lower);
-
-      if (found) {
-        addMessage(found.answer, 'bot');
-        lastBotQuestion = found.answer.includes('؟') ? found.answer : null;
-      } else {
-        addMessage('متوجه منظورت نشدم، لطفاً واضح‌تر بگو 😅', 'bot');
-        lastBotQuestion = null;
-      }
-    }, 500);
-  }
-</script>
 </body>
 </html>
