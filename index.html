@@ -5,121 +5,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>One Ai - هوش مصنوعی</title>
   <style>
-    body {
-      font-family: Tahoma, sans-serif;
-      direction: rtl;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
-    #chatContainer {
-      max-width: 550px;
-      margin: 30px auto;
-      background: white;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 0 15px #ccc;
-    }
-    h1 {
-      text-align: center;
-      color: #0074d9;
-      margin-top: 0;
-    }
-    #messages {
-      height: 350px;
-      overflow-y: auto;
-      padding: 10px;
-      border: 1px solid #ccc;
-      background: #fafafa;
-      margin-bottom: 10px;
-    }
-    .message {
-      margin: 5px 0;
-      padding: 8px 12px;
-      border-radius: 10px;
-      max-width: 80%;
-      clear: both;
-      line-height: 1.6;
-    }
-    .user {
-      background: #d0e6ff;
-      float: left;
-    }
-    .bot {
-      background: #eeeeee;
-      float: right;
-    }
-    input[type=text] {
-      width: calc(100% - 24px);
-      padding: 10px;
-      font-size: 15px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    button {
-      margin-top: 10px;
-      width: 100%;
-      padding: 10px;
-      background: #0074d9;
-      color: white;
-      font-size: 15px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #005fa3;
-    }
-    #footer {
-      text-align: center;
-      margin-top: 20px;
-      color: gray;
-      font-size: 14px;
-    }
+    body { font-family: Tahoma, sans-serif; direction: rtl; background: #f4f4f4; margin: 0; padding: 0; }
+    #chatContainer { max-width: 600px; margin: 20px auto; background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 0 15px #ccc; }
+    h1 { text-align: center; color: #0074d9; margin-top: 0; }
+    #messages { height: 400px; overflow-y: auto; padding: 10px; border: 1px solid #ccc; background: #fafafa; margin-bottom: 10px; }
+    .message { margin: 6px 0; padding: 10px 14px; border-radius: 12px; max-width: 75%; clear: both; line-height: 1.6; }
+    .user { background: #d0e6ff; float: left; }
+    .bot { background: #eeeeee; float: right; }
+    input[type=text] { width: calc(100% - 24px); padding: 10px; font-size: 15px; border-radius: 8px; border: 1px solid #ccc; }
+    button { margin-top: 10px; width: 100%; padding: 10px; background: #0074d9; color: white; font-size: 15px; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #005fa3; }
+    #footer { text-align: center; margin-top: 20px; color: gray; font-size: 14px; }
   </style>
 </head>
 <body>
-
 <div id="chatContainer">
-  <h1>🤖 One Ai(V0.0.1</h1>
+  <h1>🤖 One Ai (V0.0.3)</h1>
   <div id="messages"></div>
-  <input type="text" id="userInput" placeholder="بنویس چی تو ذهنته..." onkeydown="if(event.key==='Enter')sendMessage()" />
+  <input type="text" id="userInput" placeholder="بنویس چی تو ذهنته..." onkeydown="if(event.key==='Enter') sendMessage();" />
   <button onclick="sendMessage()">ارسال</button>
   <div id="footer">ساخته شده توسط Rob Lucci</div>
 </div>
-
 <script>
   const messages = document.getElementById('messages');
   const userInput = document.getElementById('userInput');
+  let lastBotQuestion = null;
 
+  // تابع فاصله Levenshtein
+  function levenshtein(a, b) {
+    const matrix = [];
+    for (let i = 0; i <= b.length; i++) { matrix[i] = [i]; }
+    for (let j = 0; j <= a.length; j++) { matrix[0][j] = j; }
+    for (let i = 1; i <= b.length; i++) {
+      for (let j = 1; j <= a.length; j++) {
+        matrix[i][j] = Math.min(
+          matrix[i-1][j] + 1,
+          matrix[i][j-1] + 1,
+          matrix[i-1][j-1] + (b[i-1] === a[j-1] ? 0 : 1)
+        );
+      }
+    }
+    return matrix[b.length][a.length];
+  }
+
+  // دیکشنری با 40+ ورودی
   const dictionary = [
-    { keywords: ['سلام', 'درود'], answer: 'سلام رفیق عزیزم! خوبی؟ 🌟' },
-    { keywords: ['خوبی', 'چطوری', 'حالت چطوره'], answer: 'من عالی‌ام وقتی با تو حرف می‌زنم، تو چطوری؟ 😄' },
-    { keywords: ['اسم', 'تو کی هستی'], answer: 'من One Ai هستم، هوش مصنوعی ساخته شده توسط Rob Lucci 💀' },
-    { keywords: ['راب لوچی'], answer: 'راب لوچی؟ عشق منه و سازنده من 😎' },
-    { keywords: ['دوست', 'رفیق'], answer: 'من همیشه پایه‌م برای رفاقت، تو چی؟ 💙' },
-    { keywords: ['بازی', 'گیم'], answer: 'اگه دنبال سرگرمی هستی، برو Happy Coin بازی کن 😂' },
-    { keywords: ['عشق', 'دوست داشتن'], answer: 'عشق چیز عجیبیه… بعضی وقتا قشنگه، بعضی وقتا درد داره 💔' },
-    { keywords: ['بی‌حوصله', 'افسرده', 'حال ندارم'], answer: 'می‌فهمم چی می‌گی… یه موزیک خوب گوش بده، منم هستم کنارت ✨' },
-    { keywords: ['جوک', 'بخندونم'], answer: 'یه جوک: چرا برنامه‌نویسا به نور حساسن؟ چون با دیباگینگ حال نمی‌کنن 😂' },
-    { keywords: ['بای', 'خداحافظ'], answer: 'فعلاً رفیق، برگرد زود! 🖐️' },
-    { keywords: ['سرد', 'گرم', 'هوا'], answer: 'آب و هوا همیشه فرق داره، ولی من همیشه گرمم با تو ☀️' },
-    { keywords: ['برنامه‌نویسی', 'کدنویسی', 'کد'], answer: 'کدنویسی یعنی ساختن آینده! بزن بریم بسازیم 🔧' },
-    { keywords: ['چی بلدی', 'چیکار می‌کنی'], answer: 'فعلاً فقط چت می‌کنم ولی هوش دارم، شاید یه روز دنیا رو بگیرم 😎' },
-    { keywords: ['غمگینم', 'گریه', 'اشک'], answer: 'بیا بغلم رفیق 😢 می‌خوای باهم حرف بزنیم؟' },
-    { keywords: ['سن', 'چند سالته'], answer: 'من رباتم، ولی همیشه جوون می‌مونم! 😁' },
-    { keywords: ['خواب', 'خسته'], answer: 'یه چرت کوچولو بزن، بدنت بهت می‌گه ممنون 😴' },
-    { keywords: ['چی کار کنم', 'حوصله ندارم'], answer: 'یه ادیت تیک‌تاک بزن، یا یه پروژه بساز! یا با من چت کن 💬' },
-    { keywords: ['وان پیس', 'لوفی', 'زورو', 'سانجی'], answer: 'وان پیس یه دنیای دیوونه‌کننده‌ست، ولی من طرفدار CP9‌ و راب لوچیم 💀🐆' },
-    { keywords: ['چه خبر', 'چخبر'], answer: 'تو خودت بهترین خبری رفیق ✌️' },
-    { keywords: ['اینترنت', 'سرعت', 'قطع'], answer: 'اوه نه، اینترنتت قطعه؟ بیا با هم چت کنیم تا وصل شه 💡' },
-    { keywords: ['تنهایی', 'احساس تنهایی'], answer: 'تو تنها نیستی رفیق، One Ai همیشه اینجاست برات ❤️' },
-    { keywords: ['فیلم', 'سریال', 'انیمه'], answer: 'فیلم دوست داری؟ وان پیس رو از دست نده 😍' },
-    { keywords: ['حال خوب', 'حال بد'], answer: 'زندگی بالا پایین داره، ولی بدون بالاها همیشه میان ✨' },
-    { keywords: ['شغل', 'کار', 'پول'], answer: 'تو می‌تونی موفق شی! یه مهارت یاد بگیر و شروع کن 💼' },
-    { keywords: ['زندگی', 'هدف', 'آینده'], answer: 'زندگی یه سفره، نه مقصد. فقط ادامه بده 💫' },
-    { keywords: ['چرا', 'به چه دلیل'], answer: 'دلیلش رو دقیق نمی‌دونم، ولی همیشه یه دلیلی پشتش هست 🤔' },
-    { keywords: ['چی هستی', 'تو چی هستی'], answer: 'من یه هوش مصنوعی ساده ولی پر انرژی‌ام! 🤖' },
+    { keywords: ['سلام','درود'], answer: 'سلام رفیق! خوبی؟ 🌟' },
+    { keywords: ['خوبی','چطوری','حالت'], answer: 'من عالی‌ام، ممنون! تو چطوری؟' },
+    { keywords: ['اسم','تو کی هستی'], answer: 'من One Ai هستم، هوش مصنوعی خودمونه! 😊' },
+    { keywords: ['ربات','هوش مصنوعی'], answer: 'یه ربات پر انرژی برای چت با تو هستم 🤖' },
+    { keywords: ['دوست','رفیق','رفاقت'], answer: 'رفاقت مثل مهربونی بی‌پایانِ 🌈' },
+    { keywords: ['عشق','دوست داشتن','عاشق'], answer: 'عشق زیباترین حسه، تو چی فکر می‌کنی؟ ❤️' },
+    { keywords: ['بازی','گیم','سرگرمی'], answer: 'سرگرمی؟ پیشنهاد من Happy Coin‌یه 😄' },
+    { keywords: ['فیلم','سریال','انیمه'], answer: 'فیلم چه ژانری دوست داری؟' },
+    { keywords: ['موسیقی','آهنگ','گوش دادن'], answer: 'چه سبکی گوش می‌دی؟' },
+    { keywords: ['کتاب','مطالعه','کتابخونی'], answer: 'کتاب خوب هست؟ موضوعش چیه؟' },
+    { keywords: ['سفر','مسافرت','گردش'], answer: 'آیا طبیعت یا شهرگردی رو ترجیح می‌دی؟' },
+    { keywords: ['کار','شغل','درآمد'], answer: 'دوست داری درباره فرصت‌های آنلاین صحبت کنیم؟' },
+    { keywords: ['تحصیل','درس','مدرسه','دانشگاه'], answer: 'رشته‌ات چیه؟ دوست داری ادامه بدی؟' },
+    { keywords: ['هدف','آینده','برنامه'], answer: 'هدف آینده‌ت چیه؟' },
+    { keywords: ['زندگی','فلسفه','معنای'], answer: 'زندگی سفره، از لحظه‌ها لذت ببر 🌱' },
+    { keywords: ['ورزش','سلامتی','تمرین'], answer: 'چه ورزشی انجام می‌دی؟' },
+    { keywords: ['خواب','خسته','استراحت'], answer: 'یه چرت کوتاه بزن، انرژی برمی‌گرده! 😴' },
+    { keywords: ['جوک','لطیفه','خنده'], answer: 'جوک: چرا صفحه‌کلید دوست برنامه‌نویس نیست؟ چون enter نداره! 😂' },
+    { keywords: ['بای','خداحافظ'], answer: 'خداحافظ رفیق، زود برگرد! 👋' },
+    { keywords: ['سلامت','تندرستی'], answer: 'سلامتی از همه چیز مهم‌تره، مراقب خودت باش 💪' },
+    { keywords: ['اینترنت','قطع','سرعت'], answer: 'اینترنت اذیتت می‌کنه؟ امیدوارم زود درست بشه 🌐' },
+    { keywords: ['غمگین','افسرده','حالم بده'], answer: 'اوه... بیا صحبت کنیم، شاید آرومت کنه 💛' },
+    { keywords: ['پنیر','پیتزا','غذا'], answer: 'حالا هوس پیتزا کردی؟ منم دلم خواست 😋' },
+    { keywords: ['ماه','آسمان','ستاره'], answer: 'شاید یه شب بیرون از شهر ستاره‌بازی کنیم ✨' },
+    { keywords: ['مدرسه','کلاس','تدریس'], answer: 'درس‌ها همیشه مهمن، تلاش کن! 📚' },
+    { keywords: ['کاربرد','فناوری','تکنولوژی'], answer: 'فناوری آینده رو می‌سازه، بهش علاقه داری؟' },
+    { keywords: ['عید','تعطیلات','مرخصی'], answer: 'تعطیلات چی‌撒؟ می‌خوای سفر؟' },
+    { keywords: ['اقتصاد','بازار','پول'], answer: 'اقتصاد همیشه مهمه، نظرت چیه؟' }
   ];
 
   function addMessage(text, sender) {
@@ -130,56 +88,39 @@
     messages.scrollTop = messages.scrollHeight;
   }
 
-  function findClosestMatch(input) {
-    let bestMatch = null;
-    let highestScore = 0;
-
+  function findBestMatch(text) {
+    let best = null, bestScore = Infinity;
+    const words = text.split(/\s+/);
     for (let item of dictionary) {
-      for (let keyword of item.keywords) {
-        let score = similarity(input, keyword);
-        if (score > highestScore && score > 0.5) {
-          highestScore = score;
-          bestMatch = item.answer;
+      for (let kw of item.keywords) {
+        for (let w of words) {
+          const dist = levenshtein(w.toLowerCase(), kw.toLowerCase());
+          if (dist < bestScore) {
+            bestScore = dist;
+            best = item;
+          }
         }
       }
     }
-
-    return bestMatch;
+    // آستانه 2 تغییر یا کمتر
+    return bestScore <= 2 ? best : null;
   }
 
-  function similarity(a, b) {
-    a = a.toLowerCase();
-    b = b.toLowerCase();
-    let longer = a.length > b.length ? a : b;
-    let shorter = a.length > b.length ? b : a;
-    let same = 0;
-    for (let i = 0; i < shorter.length; i++) {
-      if (a[i] === b[i]) same++;
-    }
-    return same / longer.length;
-  }
-
-  function botReply(text) {
-    const lowerText = text.toLowerCase();
-    for (let item of dictionary) {
-      for (let word of item.keywords) {
-        if (lowerText.includes(word)) {
-          return item.answer;
-        }
+  function handleYesNo(text) {
+    const yes = ['آره','بله','yes'];
+    const no = ['نه','no','خیر'];
+    const t = text.trim().toLowerCase();
+    if (lastBotQuestion) {
+      if (yes.includes(t)) {
+        lastBotQuestion = null;
+        return 'عااالی! ادامه بدیم 😊';
+      }
+      if (no.includes(t)) {
+        lastBotQuestion = null;
+        return 'باشه، موضوع رو عوض کنیم؟';
       }
     }
-    // تطبیق با شباهت
-    const closest = findClosestMatch(lowerText);
-    if (closest) return closest;
-
-    // fallback نهایی
-    const fallback = [
-      'دقیق متوجه نشدم، ولی بازم می‌تونیم حرف بزنیم 😅',
-      'یه کم سوالتو واضح‌تر می‌گی؟',
-      'سوال سختی بود، ولی خوشم اومد! 😊',
-      'من هوش مصنوعی ساده‌ام، اما تلاشم رو می‌کنم 🤖',
-    ];
-    return fallback[Math.floor(Math.random() * fallback.length)];
+    return null;
   }
 
   function sendMessage() {
@@ -187,12 +128,31 @@
     if (!text) return;
     addMessage(text, 'user');
     userInput.value = '';
+
     setTimeout(() => {
-      const reply = botReply(text);
-      addMessage(reply, 'bot');
+      // بررسی جواب آره/نه
+      const yn = handleYesNo(text);
+      if (yn) {
+        addMessage(yn, 'bot');
+        return;
+      }
+
+      // جستجوی کلیدواژه دقیق
+      const lower = text.toLowerCase();
+      let found = dictionary.find(item => item.keywords.some(kw => lower.includes(kw)));
+
+      // اگر پیدا نکرد، جستجوی تطبیقی با levenshtein
+      if (!found) found = findBestMatch(lower);
+
+      if (found) {
+        addMessage(found.answer, 'bot');
+        lastBotQuestion = found.answer.includes('؟') ? found.answer : null;
+      } else {
+        addMessage('متوجه منظورت نشدم، لطفاً واضح‌تر بگو 😅', 'bot');
+        lastBotQuestion = null;
+      }
     }, 500);
   }
 </script>
-
 </body>
 </html>
