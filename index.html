@@ -2,300 +2,161 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Battle Royale 2D - ارتقا یافته</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>One Ai - هوش مصنوعی</title>
   <style>
-    html, body { margin:0; padding:0; overflow:hidden; background:#202020; touch-action:none; }
-    canvas { display:block; background:#333; touch-action:none; }
-    #move-joystick-container, #aim-joystick-container {
-      position:absolute; bottom:20px; width:150px; height:150px; display:none; z-index:10; touch-action:none;
+    body {
+      font-family: Tahoma, sans-serif;
+      direction: rtl;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
     }
-    #move-joystick-container { left:20px; }
-    #aim-joystick-container { right:20px; }
-    #hud {
-      position:absolute; top:10px; left:50%; transform:translateX(-50%); width:300px; height:24px;
-      background:#555; border-radius:12px; overflow:hidden; z-index:11;
-      display:flex; align-items:center;
+    #chatContainer {
+      max-width: 550px;
+      margin: 30px auto;
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 15px #ccc;
     }
-    #hp-fill { height:100%; background:lime; width:100%; transition:width .2s; }
-    #heal-count { position:absolute; top:45px; left:50%; transform:translateX(-50%); color:white; font-family:sans-serif; z-index:11; }
-    #music-control {
-      position:absolute; top:10px; right:10px; z-index:11;
+    h1 {
+      text-align: center;
+      color: #0074d9;
+      margin-top: 0;
     }
-    #music-control button { background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; }
-    #game-over { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:white; font-family:sans-serif; font-size:32px; display:none; text-align:center; z-index:12; }
-    #restart-btn { margin-top:20px; padding:10px 20px; font-size:18px; border:none; border-radius:5px; background:#e74c3c; color:white; cursor:pointer; }
-    #credit { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); color: #bbb; font-family: sans-serif; z-index: 10; }
+    #messages {
+      height: 350px;
+      overflow-y: auto;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background: #fafafa;
+      margin-bottom: 10px;
+    }
+    .message {
+      margin: 5px 0;
+      padding: 8px 12px;
+      border-radius: 10px;
+      max-width: 80%;
+      clear: both;
+      line-height: 1.6;
+    }
+    .user {
+      background: #d0e6ff;
+      float: left;
+    }
+    .bot {
+      background: #eeeeee;
+      float: right;
+    }
+    input[type=text] {
+      width: calc(100% - 24px);
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+      background: #0074d9;
+      color: white;
+      font-size: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+    #footer {
+      text-align: center;
+      margin-top: 20px;
+      color: gray;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas"></canvas>
-  <div id="hud"><div id="hp-fill"></div></div>
-  <div id="heal-count">Heal‌ها: 0</div>
-  <div id="music-control"><button id="toggle-music">موسیقی روشن</button></div>
-  <!-- موزیک رایگان و آنلاین مناسب تست -->
-  <audio id="bg-music" loop src="https://cdn.pixabay.com/audio/2022/10/16/audio_12b7fa1a4c.mp3"></audio>
-  <div id="game-over">باختی!<br><button id="restart-btn">دوباره بازی کن</button></div>
-  <div id="move-joystick-container"></div>
-  <div id="aim-joystick-container"></div>
-  <div id="credit">ساخته شده توسط <b>Rob Lucci</b> | Mad by Rob Lucci </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.7.3/nipplejs.min.js"></script>
-  <script>
-    // عناصر اصلی
-    const canvas = document.getElementById('gameCanvas'), ctx = canvas.getContext('2d');
-    const hpFill = document.getElementById('hp-fill');
-    const healCountDiv = document.getElementById('heal-count');
-    const musicBtn = document.getElementById('toggle-music');
-    const bgMusic = document.getElementById('bg-music');
-    const gameOverDiv = document.getElementById('game-over'), restartBtn = document.getElementById('restart-btn');
-    const moveContainer = document.getElementById('move-joystick-container');
-    const aimContainer = document.getElementById('aim-joystick-container');
 
-    // تغییر اندازه بوم
-    function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
-    window.addEventListener('resize', resize); resize();
+<div id="chatContainer">
+  <h1>🤖 One Ai</h1>
+  <div id="messages"></div>
+  <input type="text" id="userInput" placeholder="بنویس چی تو ذهنته..." onkeydown="if(event.key==='Enter')sendMessage()" />
+  <button onclick="sendMessage()">ارسال</button>
+  <div id="footer">ساخته شده توسط Rob Lucci</div>
+</div>
 
-    // موبایل یا دسکتاپ؟
-    const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) || ('ontouchstart' in window);
+<script>
+  const messages = document.getElementById('messages');
+  const userInput = document.getElementById('userInput');
 
-    // جوی‌استیک‌ها و کنترل‌ها
-    let moveManager, aimManager;
-    const moveData = {x:0,y:0}, aimData = {x:0,y:0};
-    let lastShot = 0, shotInterval = 300, isGameOver = false;
-    let keys = {}, mouseX=canvas.width/2, mouseY=canvas.height/2;
+  function addMessage(text, sender) {
+    const msg = document.createElement('div');
+    msg.classList.add('message', sender);
+    msg.textContent = text;
+    messages.appendChild(msg);
+    messages.scrollTop = messages.scrollHeight;
+  }
 
-    // Heal items
-    const heals = [], maxHeals=3;
-    let healCount=0;
-    function spawnHeal(){ 
-      if(heals.length>=maxHeals) return;
-      const x = Math.random()*(canvas.width-40)+20, y = Math.random()*(canvas.height-40)+20;
-      heals.push({x,y,size:10});
-    }
-    setInterval(spawnHeal,5000);
+  function botReply(text) {
+    const lowerText = text.toLowerCase();
 
-    // کنترل موسیقی
-    musicBtn.addEventListener('click',()=>{
-      if(bgMusic.paused){ bgMusic.play(); musicBtn.textContent='موسیقی خاموش'; }
-      else { bgMusic.pause(); musicBtn.textContent='موسیقی روشن'; }
-    });
+    // دیکشنری ساده با کلی پاسخ
+    const dictionary = [
+      { words: ['سلام', 'درود'], answer: 'سلام رفیق عزیزم! خوبی؟ 🌟' },
+      { words: ['خوبی', 'چطوری', 'حالت چطوره'], answer: 'من عالی‌ام وقتی با تو حرف می‌زنم، تو چطوری؟ 😄' },
+      { words: ['اسم', 'تو کی هستی'], answer: 'من One Ai هستم، هوش مصنوعی ساخته شده توسط Rob Lucci 🔥' },
+      { words: ['راب لوچی'], answer: 'راب لوچی؟ عشق منه و سازنده من 😎💀' },
+      { words: ['دوست', 'رفیق'], answer: 'من همیشه پایه‌م برای رفاقت، تو چی؟ 💙' },
+      { words: ['بازی', 'گیم'], answer: 'اگه دنبال سرگرمی هستی، برو Happy Coin بازی کن 😂' },
+      { words: ['عشق', 'دوست داشتن'], answer: 'عشق چیز عجیبیه… بعضی وقتا قشنگه، بعضی وقتا درد داره 💔' },
+      { words: ['بی‌حوصله', 'افسرده', 'حال ندارم'], answer: 'می‌فهمم چی می‌گی… یه موزیک خوب گوش بده، منم هستم کنارت ✨' },
+      { words: ['جوک', 'بخندونم'], answer: 'یه جوک: چرا برنامه‌نویسا به نور حساسن؟ چون با دیباگینگ حال نمی‌کنن 😂' },
+      { words: ['بای', 'خداحافظ'], answer: 'فعلاً رفیق، برگرد زود! 🖐️' },
+      { words: ['سرد', 'گرم', 'هوا'], answer: 'آب و هوا همیشه فرق داره، ولی من همیشه گرمم با تو ☀️' },
+      { words: ['برنامه‌نویسی', 'کدنویسی'], answer: 'کدنویسی یعنی ساختن آینده! بزن بریم بسازیم 🔧' },
+      { words: ['چی بلدی', 'چیکار می‌کنی'], answer: 'فعلاً فقط چت می‌کنم ولی هوش دارم، شاید یه روز دنیا رو بگیرم 😎' },
+      { words: ['غمگینم', 'گریه', 'اشک'], answer: 'بیا بغلم رفیق 😢 می‌خوای باهم حرف بزنیم؟' },
+      { words: ['چقدر سن داری', 'سن', 'چند سالته'], answer: 'من رباتم، ولی همیشه جوون می‌مونم! 😁' },
+      { words: ['خواب', 'خسته', 'چشمام می‌سوزه'], answer: 'یه چرت کوچولو بزن، بدنت بهت می‌گه ممنون 😴' },
+      { words: ['چی کار کنم', 'حوصله ندارم'], answer: 'یه ادیت تیک‌تاک بزن، یا یه پروژه بساز! یا با من چت کن 💬' },
+      { words: ['وان پیس', 'لوفی', 'زورو', 'سانجی'], answer: 'وان پیس یه دنیای دیوونه‌کننده‌ست، ولی من طرفدار CP9‌ و راب لوچیم 💀🐆' },
+      { words: ['چه خبر', 'چخبر'], answer: 'تو خودت بهترین خبری رفیق ✌️' },
+    ];
 
-    // کنترل‌های حرکتی
-    if(isMobile){
-      moveContainer.style.display=aimContainer.style.display='block';
-      moveManager = nipplejs.create({zone:moveContainer,mode:'static',position:{left:'75px',top:'75px'},color:'white'});
-      aimManager  = nipplejs.create({zone:aimContainer, mode:'static',position:{right:'75px',top:'75px'},color:'yellow'});
-      moveManager.on('move',(_,d)=>{if(d&&d.vector){moveData.x=d.vector.x;moveData.y=d.vector.y;}});
-      moveManager.on('end',()=>{moveData.x=moveData.y=0;});
-      aimManager.on('move',(_,d)=>{if(d&&d.vector){aimData.x=d.vector.x;aimData.y=d.vector.y;shoot();}});
-      aimManager.on('end',()=>{aimData.x=aimData.y=0;});
-      // لمس برای شلیک سریع (کمک برای موبایل)
-      canvas.addEventListener('touchstart', function(e) {
-        if (aimData.x || aimData.y) shoot();
-      });
-    } else {
-      window.addEventListener('keydown',e=>{keys[e.key]=true; if(e.key===' ' || e.key==='Spacebar') shoot();});
-      window.addEventListener('keyup',e=>keys[e.key]=false);
-      window.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;});
-      window.addEventListener('mousedown',shoot);
-    }
-
-    // قالب بازیکن
-    const playerTemplate=()=>({x:canvas.width/2,y:canvas.height/2,size:20,color:'lime',speed:3,hp:100});
-    let player = playerTemplate();
-    const bots=[] , bullets=[] , enemyBullets=[];
-
-    // مقداردهی اولیه بازی
-    function init(){
-      player=playerTemplate(); isGameOver=false;
-      gameOverDiv.style.display='none'; healCount=0; healCountDiv.textContent='Heal‌ها: 0';
-      hpFill.style.width=player.hp+'%'; heals.length=0; bots.length=0; bullets.length=0; enemyBullets.length=0;
-      for(let i=0;i<5;i++){ 
-        let x,y; 
-        do{ 
-          x=Math.random()*canvas.width; 
-          y=Math.random()*canvas.height; 
-        }while(Math.hypot(x-player.x,y-player.y)<150);
-        bots.push({x,y,size:20,color:'red',speed:1.5,dx:Math.random()<0.5?1:-1,dy:Math.random()<0.5?1:-1,hp:50,lastShot:0}); 
-      }
-    }
-    init();
-
-    // شلیک بازیکن
-    function shoot(){ 
-      if(isGameOver) return; 
-      const now=Date.now(); 
-      if(now-lastShot<shotInterval) return; 
-      lastShot=now;
-      let angle = isMobile
-        ? (Math.atan2(aimData.y,aimData.x) || 0)
-        : (Math.atan2(mouseY-player.y,mouseX-player.x));
-      if(angle === angle) { // check for NaN
-        const speed=6; 
-        bullets.push({x:player.x,y:player.y,dx:Math.cos(angle)*speed,dy:Math.sin(angle)*speed,size:5,color:'yellow'});
-      }
-    }
-
-    // آپدیت بازیکن
-    function updatePlayer(){ 
-      if(isMobile){
-        player.x+=moveData.x*player.speed*2;
-        player.y+=moveData.y*player.speed*2;
-      }else{
-        if(keys['w']||keys['ArrowUp']) player.y-=player.speed; 
-        if(keys['s']||keys['ArrowDown']) player.y+=player.speed;
-        if(keys['a']||keys['ArrowLeft']) player.x-=player.speed; 
-        if(keys['d']||keys['ArrowRight']) player.x+=player.speed; 
-      }
-      player.x=Math.max(player.size,Math.min(canvas.width-player.size,player.x));
-      player.y=Math.max(player.size,Math.min(canvas.height-player.size,player.y));
-      // جمع‌آوری Heal
-      for(let i=heals.length-1;i>=0;i--){ 
-        const h=heals[i]; 
-        const d=Math.hypot(player.x-h.x,player.y-h.y);
-        if(d<player.size){ 
-          heals.splice(i,1); 
-          player.hp=Math.min(100,player.hp+30); 
-          hpFill.style.width=player.hp+'%'; 
-          healCount++; 
-          healCountDiv.textContent='Heal‌ها: '+healCount; 
+    // بررسی کلمات کلیدی
+    for (let item of dictionary) {
+      for (let word of item.words) {
+        if (lowerText.includes(word)) {
+          return item.answer;
         }
       }
     }
 
-    // آپدیت دشمنان
-    function updateBots(){ 
-      bots.forEach(bot=>{
-        const dx=player.x-bot.x,dy=player.y-bot.y,dist=Math.hypot(dx,dy),minD=bot.size+player.size;
-        if(dist<minD){ 
-          const ang=Math.atan2(dy,dx),ov=minD-dist; 
-          bot.x-=Math.cos(ang)*ov; bot.y-=Math.sin(ang)*ov; 
-        }
-        if(dist<200&&dist>=minD){
-          bot.x+=bot.speed*Math.sign(dx);
-          bot.y+=bot.speed*Math.sign(dy);
-        }
-        if(dist>=200){
-          bot.x+=bot.speed*bot.dx;
-          bot.y+=bot.speed*bot.dy;
-          if(Math.random()<.01)bot.dx*=-1;
-          if(Math.random()<.01)bot.dy*=-1;
-        }
-        bot.x=Math.max(bot.size,Math.min(canvas.width-bot.size,bot.x));
-        bot.y=Math.max(bot.size,Math.min(canvas.height-bot.size,bot.y));
-        const now=Date.now(); 
-        if(dist<250&&now-bot.lastShot>1000){
-          bot.lastShot=now; 
-          const ang=Math.atan2(dy,dx),s=4; 
-          enemyBullets.push({x:bot.x,y:bot.y,dx:Math.cos(ang)*s,dy:Math.sin(ang)*s,size:4,color:'orange'});
-        }
-      }); 
-    }
+    // اگر چیزی نفهمید
+    const fallbackResponses = [
+      'عجب سوالی پرسیدی! یه کم بیشتر توضیح میدی؟ 🧐',
+      'دقیقاً متوجه نشدم، ولی کنجکاو شدم 😅',
+      'می‌تونی یه جور دیگه بپرسی؟ شاید بهتر بفهمم 🤖',
+      'راستش نمی‌دونم چی بگم، ولی اینجام! 😄',
+      'سوال جالبی بود، ولی مغزم دود کرد 😵‍💫'
+    ];
+    return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+  }
 
-    // آپدیت گلوله‌ها
-    function updateBullets(){
-      // گلوله بازیکن
-      for(let i=bullets.length-1;i>=0;i--){
-        const b=bullets[i];
-        b.x+=b.dx; b.y+=b.dy;
-        for(let j=bots.length-1;j>=0;j--){
-          const bot=bots[j],d=Math.hypot(b.x-bot.x,b.y-bot.y);
-          if(d<bot.size){
-            bot.hp-=20;
-            bullets.splice(i,1);
-            if(bot.hp<=0)bots.splice(j,1);
-            break;
-          }
-        }
-        if(!bullets[i]) continue;
-        if(b.x<0||b.y<0||b.x>canvas.width||b.y>canvas.height) bullets.splice(i,1);
-      }
-      // گلوله دشمن
-      for(let i=enemyBullets.length-1;i>=0;i--){
-        const b=enemyBullets[i];
-        b.x+=b.dx; b.y+=b.dy;
-        const d=Math.hypot(b.x-player.x,b.y-player.y);
-        if(d<player.size){
-          player.hp-=10;
-          enemyBullets.splice(i,1);
-          hpFill.style.width=player.hp+'%';
-          if(player.hp<=0) endGame();
-          continue;
-        }
-        if(b.x<0||b.y<0||b.x>canvas.width||b.y>canvas.height)
-          enemyBullets.splice(i,1);
-      }
-    }
+  function sendMessage() {
+    const text = userInput.value.trim();
+    if (!text) return;
+    addMessage(text, 'user');
+    userInput.value = '';
+    setTimeout(() => {
+      const reply = botReply(text);
+      addMessage(reply, 'bot');
+    }, 700);
+  }
+</script>
 
-    // رندر بازی
-    function draw(){
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      if(isGameOver) return;
-      updatePlayer(); updateBots(); updateBullets();
-      // draw heals
-      heals.forEach(h=>{
-        ctx.fillStyle='hotpink';
-        ctx.beginPath();
-        ctx.arc(h.x,h.y,h.size,0,Math.PI*2);
-        ctx.fill();
-      });
-      // draw aim
-      if(isMobile&&(aimData.x||aimData.y)){
-        const len=player.size*1.5,
-              ax=player.x+aimData.x*len,
-              ay=player.y+aimData.y*len;
-        ctx.strokeStyle='rgba(255,255,0,0.7)';
-        ctx.lineWidth=2;
-        ctx.beginPath();
-        ctx.moveTo(player.x,player.y);
-        ctx.lineTo(ax,ay);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(ax,ay,5,0,Math.PI*2);
-        ctx.fillStyle='yellow';
-        ctx.fill();
-      }
-      // draw player
-      ctx.fillStyle=player.color;
-      ctx.beginPath();
-      ctx.arc(player.x,player.y,player.size,0,Math.PI*2);
-      ctx.fill();
-      // draw bots
-      bots.forEach(b=>{
-        ctx.fillStyle=b.color;
-        ctx.beginPath();
-        ctx.arc(b.x,b.y,b.size,0,Math.PI*2);
-        ctx.fill();
-      });
-      // draw bullets
-      bullets.forEach(b=>{
-        ctx.fillStyle=b.color;
-        ctx.beginPath();
-        ctx.arc(b.x,b.y,b.size,0,Math.PI*2);
-        ctx.fill();
-      });
-      // draw enemy bullets
-      enemyBullets.forEach(b=>{
-        ctx.fillStyle=b.color;
-        ctx.beginPath();
-        ctx.arc(b.x,b.y,b.size,0,Math.PI*2);
-        ctx.fill();
-      });
-      requestAnimationFrame(draw);
-    }
-
-    // پایان بازی
-    function endGame(){
-      isGameOver=true;
-      gameOverDiv.style.display='block';
-    }
-    restartBtn.addEventListener('click',function(){
-      init();
-      draw();
-    });
-
-    // شروع بازی
-    draw();
-  </script>
 </body>
-  </html>
+</html>
