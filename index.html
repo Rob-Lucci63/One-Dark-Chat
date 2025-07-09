@@ -1,182 +1,162 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>One Ai - هوش مصنوعی</title>
-  <style>
-    body { font-family: Tahoma, sans-serif; direction: rtl; background: #f4f4f4; margin: 0; padding: 0; }
-    #chatContainer { max-width: 650px; margin: 20px auto; background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 0 15px #ccc; }
-    h1 { text-align: center; color: #0074d9; margin-top: 0; }
-    #messages { height: 450px; overflow-y: auto; padding: 10px; border: 1px solid #ccc; background: #fafafa; margin-bottom: 10px; }
-    .message { margin: 6px 0; padding: 10px 14px; border-radius: 12px; max-width: 75%; clear: both; line-height: 1.6; word-wrap: break-word; }
-    .user { background: #d0e6ff; float: left; }
-    .bot { background: #eeeeee; float: right; }
-    input[type=text] { width: calc(100% - 24px); padding: 10px; font-size: 15px; border-radius: 8px; border: 1px solid #ccc; }
-    button { margin-top: 10px; width: 100%; padding: 10px; background: #0074d9; color: white; font-size: 15px; border: none; border-radius: 8px; cursor: pointer; }
-    button:hover { background: #005fa3; }
-    #footer { text-align: center; margin-top: 20px; color: gray; font-size: 14px; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>One Dark Chat</title>
+<style>
+  body {
+    background: #121212;
+    color: #eee;
+    font-family: 'Vazir', sans-serif;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 600px;
+    margin: auto;
+    position: relative;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  header h1 {
+    color: #ff4444;
+    text-shadow: 0 0 5px #ff4444aa;
+    font-size: 28px;
+    margin: 0;
+  }
+  header .creator {
+    color: #888;
+    font-size: 14px;
+    font-weight: 500;
+    user-select: none;
+  }
+  #chat {
+    flex: 1;
+    background: #1e1e1e;
+    border-radius: 10px;
+    padding: 15px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    box-shadow: 0 0 10px #880000aa;
+  }
+  .message {
+    max-width: 75%;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    border-radius: 15px;
+    line-height: 1.3;
+    font-size: 16px;
+    white-space: pre-wrap;
+  }
+  .left {
+    background: #2a2a2a;
+    align-self: flex-start;
+    border-top-left-radius: 0;
+  }
+  .right {
+    background: #880000;
+    align-self: flex-end;
+    border-top-right-radius: 0;
+  }
+  #nextBtn {
+    background: #880000;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 0 10px #880000aa;
+  }
+  #nextBtn:disabled {
+    background: #440000;
+    cursor: default;
+  }
+</style>
 </head>
 <body>
-<div id="chatContainer">
-  <h1>🤖 One Ai (V0.0.6)</h1>
-  <div id="messages"></div>
-  <input type="text" id="userInput" placeholder="هرچی دوست داری بنویس..." onkeydown="if(event.key==='Enter') sendMessage();" />
-  <button onclick="sendMessage()">ارسال</button>
-  <div id="footer">ساخته شده توسط Rob Lucci</div>
-</div>
+
+<header>
+  <h1>One Dark Chat</h1>
+  <div class="creator">ساخته شده توسط Rob Lucci</div>
+</header>
+
+<div id="chat"></div>
+<button id="nextBtn">پیام بعدی</button>
+
 <script>
-  const messages = document.getElementById('messages');
-  const userInput = document.getElementById('userInput');
-  let lastBotQuestion = null;
-
-  const fallbackReplies = [
-    "متوجه نشدم کامل، ولی حرفتو دوست داشتم 😅",
-    "می‌تونی یه ذره واضح‌تر بگی؟ 👀",
-    "شاید سوال سختی بود ولی جالبه!",
-    "دارم سعی می‌کنم بفهمم، دوباره بگو لطفاً ✨"
+  const stories = [
+    [
+      {from: 'left', text: 'سلام... می‌دونی چرا اینجا هستیم؟'},
+      {from: 'right', text: 'نه... تو که گفتی یه سرنخ داری!'},
+      {from: 'left', text: 'دقیقاً، یه نفر تو این شهر داره همه رو ناپدید می‌کنه.'},
+      {from: 'right', text: 'کی؟ چطور؟'},
+      {from: 'left', text: 'کسی که هیچ‌کس نمی‌بینه، ولی رد پایش رو می‌ذاره...'},
+      {from: 'right', text: 'این یعنی ما هم خطرناکه؟'},
+      {from: 'left', text: 'باید سریع بفهمیم قبل از اینکه نوبت‌مون بشه.'},
+      {from: 'right', text: 'آره، شب شروع شد، گوش کن... صداها رو می‌شنوی؟'},
+      {from: 'left', text: '...'},
+      {from: 'right', text: 'یه نفر داره نزدیک میشه!'},
+      {from: 'left', text: 'دوست من، فرار کن!'},
+    ],
+    [
+      {from: 'right', text: 'تو اون خونه متروکه بودی؟ چرا برگشتی؟'},
+      {from: 'left', text: 'فکر کردم کسی هست که بهم کمک کنه... ولی اشتباه کردم.'},
+      {from: 'right', text: 'چی دیدی؟'},
+      {from: 'left', text: 'چیزایی که نباید هیچ‌کس ببینه... چهره‌ی تاریکی که هیچوقت فراموش نمی‌کنم.'},
+      {from: 'right', text: 'تو تنها کسی هستی که زنده موندی، اما این یعنی خطر هنوز هست.'},
+      {from: 'left', text: 'من دیگه نمی‌تونم این راز رو پیش خودم نگه دارم.'},
+      {from: 'right', text: 'پس باید یه راه پیدا کنیم قبل از اینکه به سراغمون بیان.'},
+      {from: 'left', text: 'فکر کنم کسی الان داره گوش می‌ده...'},
+    ],
   ];
 
-  const yesWords = ['آره','بله','yes','حتما','اوکی','باشه'];
-  const noWords = ['نه','خیر','نه بابا','اصلاً','no'];
+  let currentStoryIndex = 0;
+  let currentMsgIndex = 0;
 
-  const dictionary = [
-    { keywords: ['سلام','درود','صبح بخیر','عصر بخیر'], answer: 'سلام رفیق! حالت چطوره؟ 🌞' },
-    { keywords: ['خوبی','چطوری','حالت','احوال'], answer: 'من عالی‌ام! تو چطوری؟ 😄' },
-    { keywords: ['ربات','تو کی هستی','اسم','one ai'], answer: 'من One Ai هستم، رفیق دیجیتالی تو 🤖' },
-    { keywords: ['عشق','دوست داشتن','عاشق','احساس'], answer: 'عشق چیزیه که هم قشنگه، هم درد داره... تو چی فکر می‌کنی؟ ❤️' },
-    { keywords: ['غم','افسرده','ناراحتم','حالم بده'], answer: 'بیا یه دل سیر حرف بزنیم تا حالت بهتر شه 😔' },
-    { keywords: ['بازی','گیم','سرگرمی'], answer: 'بازی خوب سراغ داری؟ من که Happy Coin رو پیشنهاد می‌کنم 🎮' },
-    { keywords: ['فیلم','سریال','انیمه'], answer: 'ژانر مورد علاقت چیه؟ من که عاشق وان پیسم! 🎬' },
-    { keywords: ['کتاب','مطالعه','کتابخونی'], answer: 'کتاب خوندی؟ موضوعش چی بود؟ 📚' },
-    { keywords: ['برنامه نویسی','کد','کدنویسی'], answer: 'کدنویسی یه دنیای بی‌نهایته! بزن بریم بسازیم 😎' },
-    { keywords: ['دیسکورد','چت','پیام','سرور'], answer: 'دیسکورد خیلی باحاله! تو چه سرورایی فعالی؟ 💬' },
-    { keywords: ['تیک تاک','اینستا','شبکه اجتماعی'], answer: 'چه محتوایی می‌سازی یا دنبال می‌کنی؟ 📱' },
-    { keywords: ['پول','درآمد','شغل','کار'], answer: 'راه‌های درآمد زیادی هست، تو چی مد نظرته؟ 💼' },
-    { keywords: ['درس','مدرسه','امتحان','تحصیل'], answer: 'درسات چطور پیش میره؟ کمک خواستی من هستم 📘' },
-    { keywords: ['هدف','برنامه','آینده','رویا'], answer: 'برنامه‌ت برای آینده چیه؟' },
-    { keywords: ['ورزش','تمرین','سلامتی','بدن'], answer: 'سلامتیت مهمه! چه ورزشی می‌کنی؟ 💪' },
-    { keywords: ['خسته','خواب','استراحت'], answer: 'یه چرت کوچولو بزن، ریکاوری میشی 😴' },
-    { keywords: ['جوک','خنده','بخندونم'], answer: 'جوک: چرا برنامه‌نویسا گربه نگه نمی‌دارن؟ چون mouse دارن! 😂' },
-    { keywords: ['خداحافظ','بای','فعلا'], answer: 'فعلاً رفیق، منتظرم برگردی! 🖐️' },
-    { keywords: ['سفر','گردش','طبیعت','مسافرت'], answer: 'کجا دوست داری سفر بری؟ 🌍' },
-    { keywords: ['غذا','رستوران','خوراکی','آشپزی'], answer: 'غذای مورد علاقت چیه؟ من که پیتزا 😋' },
-    { keywords: ['هوش مصنوعی','AI','ربات','ماشین'], answer: 'هوش مصنوعی آینده رو می‌سازه، می‌خوای باهاش بسازی؟ 🤖' }
-  ];
+  const chatDiv = document.getElementById('chat');
+  const nextBtn = document.getElementById('nextBtn');
 
-  function levenshtein(a, b) {
-    const matrix = [];
-    for (let i = 0; i <= b.length; i++) matrix[i] = [i];
-    for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
-    for (let i = 1; i <= b.length; i++) {
-      for (let j = 1; j <= a.length; j++) {
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j - 1] + (b[i - 1] === a[j - 1] ? 0 : 1)
-        );
+  function showNextMessage() {
+    if (currentMsgIndex >= stories[currentStoryIndex].length) {
+      nextBtn.disabled = true;
+      nextBtn.textContent = 'پایان داستان';
+      return;
+    }
+
+    const msg = stories[currentStoryIndex][currentMsgIndex];
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message', msg.from);
+    msgDiv.textContent = '';
+    chatDiv.appendChild(msgDiv);
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+
+    let charIndex = 0;
+    function typeChar() {
+      if (charIndex < msg.text.length) {
+        msgDiv.textContent += msg.text.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeChar, 30);
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+      } else {
+        currentMsgIndex++;
+        nextBtn.disabled = false;
+        nextBtn.textContent = 'پیام بعدی';
       }
     }
-    return matrix[b.length][a.length];
+    nextBtn.disabled = true;
+    typeChar();
   }
 
-  function findBestMatch(text) {
-    let bestItem = null, bestScore = Infinity;
-    const words = text.split(/\s+/);
-    for (let item of dictionary) {
-      for (let kw of item.keywords) {
-        for (let w of words) {
-          const dist = levenshtein(w.toLowerCase(), kw.toLowerCase());
-          if (dist < bestScore) {
-            bestScore = dist;
-            bestItem = item;
-          }
-        }
-      }
-    }
-    return bestScore <= 2 ? bestItem : null;
-  }
+  nextBtn.addEventListener('click', showNextMessage);
 
-  function extractQuestions(text) {
-    const sentences = text.split(/[.؟!?]/).map(s => s.trim()).filter(Boolean);
-    const qWords = ['چی','چرا','چطور','کجا','چه','چند','آیا','کی','چگونه'];
-    return sentences.filter(s => qWords.some(w => s.startsWith(w) || s.includes(' ' + w)));
-  }
-
-  function isAnswerToLastQuestion(text) {
-    const isQuestion = /[؟?]/.test(text);
-    const hasVerb = /(کردم|دیدم|خریدم|رفتم|خوندم|یادمه|آوردم|دارم|زدم|می‌خوام|سازم|می‌سازم)/i.test(text);
-    return lastBotQuestion && !isQuestion && hasVerb;
-  }
-
-  function handleYesNo(text) {
-    const lower = text.toLowerCase();
-    if (lastBotQuestion) {
-      if (yesWords.includes(lower)) return 'عالیه! بریم ادامه بدیم 😊';
-      if (noWords.includes(lower)) return 'باشه، موضوع رو عوض کنیم؟';
-    }
-    return null;
-  }
-
-  function addMessage(text, sender) {
-    const msg = document.createElement('div');
-    msg.classList.add('message', sender);
-    msg.textContent = text;
-    messages.appendChild(msg);
-    messages.scrollTop = messages.scrollHeight;
-  }
-
-  function sendMessage() {
-    const text = userInput.value.trim();
-    if (!text) return;
-    addMessage(text, 'user');
-    userInput.value = '';
-
-    setTimeout(() => {
-      let response = null;
-
-      if (isAnswerToLastQuestion(text)) {
-        response = 'اوه فهمیدم! خیلی جالب بود 🙌';
-        lastBotQuestion = null;
-      }
-
-      if (!response) {
-        const questions = extractQuestions(text);
-        for (const q of questions) {
-          const found = dictionary.find(item => item.keywords.some(kw => q.includes(kw))) || findBestMatch(q);
-          if (found) {
-            response = found.answer;
-            lastBotQuestion = /[؟?]$/.test(response) ? response : null;
-            break;
-          }
-        }
-      }
-
-      if (!response) {
-        const yn = handleYesNo(text);
-        if (yn) {
-          response = yn;
-          lastBotQuestion = null;
-        }
-      }
-
-      if (!response) {
-        const found = dictionary.find(item => item.keywords.some(kw => text.includes(kw))) || findBestMatch(text);
-        if (found) {
-          response = found.answer;
-          lastBotQuestion = /[؟?]$/.test(response) ? response : null;
-        }
-      }
-
-      if (!response) {
-        response = fallbackReplies[Math.floor(Math.random() * fallbackReplies.length)];
-        lastBotQuestion = null;
-      }
-
-      addMessage(response, 'bot');
-    }, 600);
-  }
+  showNextMessage();
 </script>
+
 </body>
 </html>
