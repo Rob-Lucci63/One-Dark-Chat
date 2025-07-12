@@ -1,240 +1,294 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>One Dark Chat</title>
-<style>
-  body {
-    background: #121212;
-    color: #eee;
-    font-family: 'Vazir', sans-serif;
-    padding: 20px;
-    max-width: 600px;
-    margin: auto;
-  }
-  h1 {
-    text-align: center;
-    color: #ff4444;
-    text-shadow: 0 0 5px #ff4444aa;
-    margin-bottom: 5px;
-  }
-  .version {
-    text-align: center;
-    font-size: 14px;
-    color: #bbb;
-    margin-bottom: 15px;
-  }
-  .creator {
-    text-align: center;
-    font-size: 14px;
-    color: #888;
-    margin-bottom: 20px;
-  }
-  .story-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .story-btn {
-    background: #880000;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px;
-    cursor: pointer;
-    text-align: right;
-  }
-  .story-btn:hover {
-    background: #aa0000;
-  }
-  #chat, #backBtn, #nextBtn {
-    display: none;
-  }
-  #chat {
-    background: #1e1e1e;
-    border-radius: 10px;
-    padding: 15px;
-    margin-top: 15px;
-    height: 400px;
-    overflow-y: auto;
-    box-shadow: 0 0 10px #880000aa;
-    display: flex;
-    flex-direction: column;
-  }
-  .message {
-    max-width: 75%;
-    margin-bottom: 12px;
-    padding: 10px 14px;
-    border-radius: 15px;
-    line-height: 1.4;
-    font-size: 16px;
-    white-space: pre-wrap;
-  }
-  .left {
-    background: #2a2a2a;
-    align-self: flex-start;
-    border-top-left-radius: 0;
-  }
-  .right {
-    background: #880000;
-    align-self: flex-end;
-    border-top-right-radius: 0;
-  }
-  #nextBtn, #backBtn {
-    background: #880000;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-    display: block;
-  }
-  #nextBtn:disabled {
-    background: #440000;
-    cursor: default;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>One Dark Chat</title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet" />
+  <style>
+    body {
+      background: #121212;
+      color: #eee;
+      font-family: 'Vazir', sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      direction: rtl;
+    }
+    h1 {
+      text-align: center;
+      color: #ff4444;
+      text-shadow: 0 0 5px #ff4444aa;
+      margin-bottom: 5px;
+    }
+    .creator {
+      text-align: center;
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 5px;
+    }
+    .version {
+      text-align: center;
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    .story-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .story-btn {
+      background: #880000;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      text-align: right;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    .story-btn:hover {
+      background: #aa0000;
+    }
+    #chat, #backBtn, #nextBtn {
+      display: none;
+    }
+    #chat {
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 15px;
+      height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 0 10px #880000aa;
+      display: flex;
+      flex-direction: column;
+      scroll-behavior: smooth;
+    }
+    .message {
+      max-width: 75%;
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      border-radius: 15px;
+      line-height: 1.4;
+      font-size: 16px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      user-select: text;
+    }
+    .left {
+      background: #2a2a2a;
+      align-self: flex-start;
+      border-top-left-radius: 0;
+    }
+    .right {
+      background: #880000;
+      align-self: flex-end;
+      border-top-right-radius: 0;
+    }
+    #nextBtn, #backBtn {
+      background: #880000;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      display: block;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+    #nextBtn:disabled {
+      background: #440000;
+      cursor: default;
+    }
+    #nextBtn:hover:not(:disabled),
+    #backBtn:hover {
+      background: #aa0000;
+    }
+    .submit-box {
+      background: #1b1b1b;
+      border: 1px solid #880000;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 30px;
+      color: #ddd;
+      text-align: center;
+      box-shadow: 0 0 10px #88000055;
+      user-select: none;
+    }
+    .submit-box p {
+      margin: 10px 0;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .discord-btn {
+      display: inline-block;
+      margin-top: 10px;
+      background: #ff4444;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.2s ease;
+    }
+    .discord-btn:hover {
+      background: #cc0000;
+    }
+  </style>
 </head>
 <body>
+  <h1>One Dark Chat</h1>
+  <div class="creator">ساخته شده توسط Rob Lucci</div>
+  <div class="version">نسخه 0.0.3</div>
 
-<h1>One Dark Chat</h1>
-<div class="version">نسخه 0.0.2</div>
-<div class="creator">ساخته شده توسط Rob Lucci 💀</div>
+  <div class="story-list" id="storyList">
+    <button class="story-btn" onclick="startStory(0)">خانه‌ی شماره ۱۳ 🩸</button>
+    <button class="story-btn" onclick="startStory(1)">شاهد نیمه‌شب 🌘</button>
+    <button class="story-btn" onclick="startStory(2)">آخرین پیام 👁️‍🗨️</button>
+    <button class="story-btn" onclick="startStory(3)">دختر فانوس‌به‌دست 🕯️</button>
+  </div>
 
-<!-- لیست داستان‌ها -->
-<div class="story-list" id="storyList">
-  <button class="story-btn" onclick="startStory(0)">خانه‌ی شماره ۱۳ 🩸</button>
-  <button class="story-btn" onclick="startStory(1)">شاهد نیمه‌شب 🌘</button>
-  <button class="story-btn" onclick="startStory(2)">آخرین پیام 👁️‍🗨️</button>
-  <button class="story-btn" onclick="startStory(3)">دختر فانوس به‌دست 🕯️</button>
-</div>
+  <div class="submit-box">
+    <p>🎙️ می‌خوای داستان خودتو اضافه کنی؟</p>
+    <p>وارد سرور دیسکورد ما شو و توی تیکت مخصوص داستان بنویس تا بررسی و اضافه بشه 👻</p>
+    <a href="https://discord.gg/pjF32Hy3vT" target="_blank" class="discord-btn" rel="noopener noreferrer">🚪 ورود به دیسکورد</a>
+  </div>
 
-<!-- چت داستان -->
-<div id="chat"></div>
-<button id="nextBtn" onclick="showNextMessage()">پیام بعدی</button>
-<button id="backBtn" onclick="goBack()">🔙 بازگشت به لیست داستان‌ها</button>
+  <div id="chat" aria-live="polite" aria-atomic="false"></div>
+  <button id="nextBtn" onclick="showNextMessage()">پیام بعدی</button>
+  <button id="backBtn" onclick="goBack()">🔙 بازگشت به لیست داستان‌ها</button>
 
-<script>
-  const stories = [
-    [ // داستان ۱: خانه‌ی شماره ۱۳
-      {from: 'left', text: 'تو مطمئنی آدرس درسته؟'},
-      {from: 'right', text: 'آره، اینجا خیابون قبرستانه... پلاک 13. خونه‌ی لعنتی!'},
-      {from: 'left', text: 'اسمش هم ترسناکه، چرا اصلاً اومدیم اینجا؟'},
-      {from: 'right', text: 'پدرم قبل ناپدید شدنش درباره این خونه هشدار داده بود.'},
-      {from: 'left', text: 'تو هم مثل پدرت کنجکاوی داری... خطرناکه.'},
-      {from: 'right', text: 'درش قفله. ولی پنجره طبقه پایین بازه.'},
-      {from: 'left', text: 'بریم داخل؟'},
-      {from: 'right', text: 'آره. چراغ قوه‌تو روشن کن.'},
-      {from: 'left', text: 'اینجا خیلی سرده... بوی زننده‌ای میاد.'},
-      {from: 'right', text: 'بوی خون خشک شده‌س... بوی مرگ.'},
-      {from: 'left', text: 'یه دفترچه پیدا کردم، نوشته با جوهر قرمز... یا شایدم خون؟'},
-      {from: 'right', text: '"هر که وارد شود، گذشته‌اش زنده خواهد شد... و آینده‌اش تمام خواهد شد."'},
-      {from: 'left', text: 'اون سایه کی بود؟ دیدی؟ پشت دیوار!'},
-      {from: 'right', text: 'باید بریم پایین، صدای زنجیر میاد... از زیرزمین.'},
-      {from: 'left', text: 'در باز شد؟ تو زدی؟'},
-      {from: 'right', text: 'نه... خودش باز شد...'},
-      {from: 'left', text: 'پدرت... اون اونجاست! اما... پیر شده... و... مرده؟'},
-      {from: 'right', text: 'نه... اون منم. آینده‌ی من... این خونه زمانو می‌خوره.'},
-      {from: 'left', text: 'در بسته شد! صدای پا... نزدیک میشه—'},
-      {from: 'right', text: 'دیگه دیر شده...'}
-    ],
-    [ // داستان ۲
-      {from: 'left', text: 'پنجره‌ی طبقه چهارم هنوز بازه.'},
-      {from: 'right', text: 'اونجا صدای شلیک اومد. جیغ هم شنیدی؟'},
-      {from: 'left', text: 'آره. ساعت ۳ شب بود. همیشه عجیب‌ترین وقته.'},
-      {from: 'right', text: 'دوربین رو تنظیم کردم، ضبطش روشن شد.'},
-      {from: 'left', text: 'سایه‌ای دیده میشه. داره چیزی می‌کشه رو زمین.'},
-      {from: 'right', text: 'اون یه جسده؟ نه... داره تکون می‌خوره.'},
-      {from: 'left', text: 'اون دختره زنده‌س! باید نجاتش بدیم.'},
-      {from: 'right', text: 'زنگ زدم پلیس. فیلم رو هم فرستادم.'},
-      {from: 'left', text: 'پلیسا رسیدن. صدای تیر اومد. قاتل رو گرفتن.'},
-      {from: 'right', text: 'دختره نجات پیدا کرد. ما کمکش کردیم.'}
-    ],
-    [ // داستان ۳
-      {from: 'left', text: 'یه پیام اومد: "بهت گفتم وارد نشو..."'},
-      {from: 'right', text: 'شماره‌ش ناشناسه؟'},
-      {from: 'left', text: 'آره. باهاش یه فایل صوتی بود. صدای جیغ...'},
-      {from: 'right', text: 'اون صدا برات آشنا نبود؟'},
-      {from: 'left', text: 'انگار صدای خودم بود... ولی توی ترس.'},
-      {from: 'right', text: 'یه بار منم پیام مشابه گرفتم... تو همون خونه.'},
-      {from: 'left', text: 'پنجره باز شد خودبه‌خود. گوشی‌م خاموش شد.'},
-      {from: 'right', text: 'الان برو بیرون! همین حالا!'},
-      {from: 'left', text: 'دیر شده. پشت سرمه. نفس نمی‌کشه... صدا نداره.'},
-      {from: 'right', text: 'بدو—'},
-      {from: 'left', text: 'آخرین پیام: "نفر بعدی تویی..."'}
-    ],
-    [ // داستان ۴
-      {from: 'right', text: 'گفتی دختر فانوس‌به‌دستی دیدی؟'},
-      {from: 'left', text: 'آره، وسط مه. نجاتم داد.'},
-      {from: 'right', text: 'اون زنده بود؟'},
-      {from: 'left', text: 'فقط راه افتاد و من دنبال نورش رفتم.'},
-      {from: 'right', text: 'می‌گن اون دختر سال‌ها پیش گم شد.'},
-      {from: 'left', text: 'ولی اون شب، راه نجاتم رو نشونم داد.'},
-      {from: 'right', text: 'شاید روحش دنبال کمک کردنه.'},
-      {from: 'left', text: 'وقتی رسیدم نزدیک خونه، ناپدید شد.'},
-      {from: 'right', text: 'بهش مدیونی. نجاتت داد.'}
-    ]
-  ];
+  <audio id="typeSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_bdcf544b7b.mp3" preload="auto"></audio>
 
-  let currentStory = [];
-  let msgIndex = 0;
+  <script>
+    const stories = [
+      [
+        {from: 'left', text: 'تو مطمئنی آدرس درسته؟'},
+        {from: 'right', text: 'آره، اینجا خیابون قبرستانه... پلاک 13. خونه‌ی لعنتی!'},
+        {from: 'left', text: 'اسمش هم ترسناکه، چرا اصلاً اومدیم اینجا؟'},
+        {from: 'right', text: 'برای یه حقیقت قدیمی. پدرم قبل از ناپدید شدنش درباره این خونه هشدار داده بود.'},
+        {from: 'left', text: 'تو هم مثل پدرت کنجکاوی داری... خطرناکه.'},
+        {from: 'right', text: 'درش قفله. ولی پنجره طبقه پایین بازه.'},
+        {from: 'left', text: 'بریم داخل؟'},
+        {from: 'right', text: 'آره. چراغ قوه‌تو روشن کن.'},
+        {from: 'left', text: 'اینجا خیلی سرده... و اون بوی زننده چیه؟'},
+        {from: 'right', text: 'بوی خون خشک شده‌س... بوی مرگ.'},
+        {from: 'left', text: 'یه دفترچه پیدا کردم، نوشته با جوهر قرمز... یا شایدم خون؟'},
+        {from: 'right', text: '"هر که وارد شود، گذشته‌اش زنده خواهد شد... و آینده‌اش تمام خواهد شد."'},
+        {from: 'left', text: 'اون سایه کی بود؟ دیدی؟ پشت دیوار!'},
+        {from: 'right', text: 'باید بریم پایین، صدای زنجیر میاد... از زیرزمین.'},
+        {from: 'left', text: 'در باز شد؟ تو زدی؟'},
+        {from: 'right', text: 'نه... خودش باز شد...'},
+        {from: 'left', text: 'پدرت... اون اونجاست! اما... پیر شده... و... مرده؟'},
+        {from: 'right', text: 'نه... اون منم. آینده‌ی من... این خونه لعنتی زمانو می‌خوره.'},
+        {from: 'left', text: 'در بسته شد! صدای پا... نزدیک میشه—'},
+        {from: 'right', text: 'دیگه دیر شده...'}
+      ],
+      [
+        {from: 'left', text: 'پنجره‌ی واحد ۴ طبقه پایین هنوز بازه.'},
+        {from: 'right', text: 'اونجا صدای شلیک اومد. صدای جیغ هم شنیدی؟'},
+        {from: 'left', text: 'آره. ۳ شب بود. همیشه ساعت ۳ بدترین وقته.'},
+        {from: 'right', text: 'دوربین رو تنظیم کردم. ضبطش شروع شد.'},
+        {from: 'left', text: 'سایه‌ای دیده میشه. داره چیزی می‌کشه رو زمین.'},
+        {from: 'right', text: 'اون یه جسده؟ نه... داره تکون می‌خوره.'},
+        {from: 'left', text: 'اون دختره زنده‌س! باید نجاتش بدیم.'},
+        {from: 'right', text: 'زنگ زدم پلیس. فیلم رو هم براشون فرستادم.'},
+        {from: 'left', text: 'ماشین پلیس رسید. صدای تیر اومد. اون قاتل رو زدن.'},
+        {from: 'right', text: 'دختره زنده‌س. به خاطر ما. چون بی‌تفاوت نبودیم.'}
+      ],
+      [
+        {from: 'left', text: 'یه پیام اومد: "بهت گفتم وارد نشو..."'},
+        {from: 'right', text: 'شماره‌ش ناشناسه؟'},
+        {from: 'left', text: 'آره. و پشتش یه فایل صوتی فرستاد. صدای جیغ...'},
+        {from: 'right', text: 'اون صدا برات آشنا نبود؟'},
+        {from: 'left', text: 'انگار صدای خودم بود... ولی توی ترس.'},
+        {from: 'right', text: 'یه بار منم یه پیام مشابه گرفتم... توی همون خونه.'},
+        {from: 'left', text: 'پنجره اتاقم خودبه‌خود باز شد. گوشی‌م خاموش شد یه لحظه.'},
+        {from: 'right', text: 'باید بری بیرون... الان!'},
+        {from: 'left', text: 'دیگه دیر شده. اون پشت سرمه. ولی صدا نداره. نفس هم نمی‌کشه.'},
+        {from: 'right', text: 'تورو خدا بدو—'},
+        {from: 'left', text: 'پیام آخری که دیدم نوشت: "نفر بعدی تویی..."'}
+      ],
+      [
+        {from: 'right', text: 'تو گفتی یه دختر با فانوس دیدی توی مه؟'},
+        {from: 'left', text: 'آره، وسط جنگل. نور فانوسش نجاتم داد.'},
+        {from: 'right', text: 'مطمئنی زنده بود؟ تو اون وضعیت؟'},
+        {from: 'left', text: 'چیزی نگفت. فقط راه افتاد و من دنبال نورش رفتم.'},
+        {from: 'right', text: 'مردم می‌گن اون دختر سال‌ها پیش گم شد. با فانوسش رفت دنبال سگش و دیگه برنگشت.'},
+        {from: 'left', text: 'ولی اون شب... من تو گل مونده بودم. اون بهم راه رو نشون داد.'},
+        {from: 'right', text: 'عجیبه... انگار روحش دنبال کمک کردن به بقیه‌ست.'},
+        {from: 'left', text: 'درست وقتی از مه خارج شدم و نور خونه رو دیدم، غیب شد.'},
+        {from: 'right', text: 'اون باعث شد زنده بمونی. یه روح محافظ؟'},
+        {from: 'left', text: 'شاید. ولی بهش مدیونم. من نباید اونجا زنده می‌موندم.'}
+      ]
+    ];
 
-  const storyList = document.getElementById('storyList');
-  const chat = document.getElementById('chat');
-  const nextBtn = document.getElementById('nextBtn');
-  const backBtn = document.getElementById('backBtn');
+    let currentStory = [];
+    let msgIndex = 0;
+    const storyList = document.getElementById('storyList');
+    const chat = document.getElementById('chat');
+    const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
+    const typeSound = document.getElementById('typeSound');
+    let typingTimeout;
 
-  function startStory(index) {
-    currentStory = stories[index];
-    msgIndex = 0;
-    chat.innerHTML = '';
-    storyList.style.display = 'none';
-    chat.style.display = 'flex';
-    nextBtn.style.display = 'block';
-    nextBtn.disabled = true;
-    backBtn.style.display = 'none';
-    showNextMessage();
-  }
-
-  function showNextMessage() {
-    if (msgIndex >= currentStory.length) {
-      nextBtn.style.display = 'none';
-      backBtn.style.display = 'block';
-      return;
+    function startStory(index) {
+      currentStory = stories[index];
+      msgIndex = 0;
+      chat.innerHTML = '';
+      storyList.style.display = 'none';
+      chat.style.display = 'flex';
+      nextBtn.style.display = 'block';
+      backBtn.style.display = 'none';
+      nextBtn.disabled = true;  // غیرفعال تا پایان تایپ
+      showNextMessage();
     }
-    nextBtn.disabled = true;
-    const msg = currentStory[msgIndex];
-    const div = document.createElement('div');
-    div.className = 'message ' + msg.from;
-    div.textContent = '';
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
 
-    let i = 0;
-    function typeText() {
-      if (i < msg.text.length) {
-        div.textContent += msg.text.charAt(i++);
-        setTimeout(typeText, 25);
-        chat.scrollTop = chat.scrollHeight;
-      } else {
-        msgIndex++;
-        nextBtn.disabled = false;
+    function showNextMessage() {
+      if (msgIndex >= currentStory.length) {
+        nextBtn.style.display = 'none';
+        backBtn.style.display = 'block';
+        return;
       }
+      nextBtn.disabled = true;
+      const msg = currentStory[msgIndex++];
+      const div = document.createElement('div');
+      div.className = 'message ' + msg.from;
+      div.textContent = '';
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+
+      let i = 0;
+      clearTimeout(typingTimeout);
+      function typeText() {
+        if (i < msg.text.length) {
+          div.textContent += msg.text.charAt(i++);
+          if (typeSound && i % 3 === 0) { // صدا کمتر تکرار شه
+            typeSound.currentTime = 0;
+            typeSound.play().catch(() => {});
+          }
+          typingTimeout = setTimeout(typeText, 30);
+          chat.scrollTop = chat.scrollHeight;
+        } else {
+          nextBtn.disabled = false;
+        }
+      }
+      typeText();
     }
-    typeText();
-  }
 
-  function goBack() {
-    storyList.style.display = 'flex';
-    chat.style.display = 'none';
-    nextBtn.style.display = 'none';
-    backBtn.style.display = 'none';
-  }
-</script>
-
+    function goBack() {
+      clearTimeout(typingTimeout);
+      storyList.style.display = 'flex';
+      chat.style.display = 'none';
+      backBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+    }
+  </script>
 </body>
 </html>
