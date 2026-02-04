@@ -157,6 +157,18 @@
             box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
         }
 
+        .btn-code {
+            background: #17a2b8;
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-code:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+        }
+
         .sections-list {
             background: white;
             border: 1px solid #ddd;
@@ -288,6 +300,102 @@
             margin: 5px 0;
         }
 
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 90%;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .modal-header h2 {
+            color: #667eea;
+        }
+
+        .close-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .close-btn:hover {
+            background: #c82333;
+        }
+
+        .code-box {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #667eea;
+        }
+
+        .code-box code {
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+        }
+
+        .copy-success {
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
         /* Responsive */
         @media (max-width: 1200px) {
             .main-wrapper {
@@ -306,17 +414,20 @@
         }
 
         .editor-panel::-webkit-scrollbar,
-        .sections-list::-webkit-scrollbar {
+        .sections-list::-webkit-scrollbar,
+        .code-box::-webkit-scrollbar {
             width: 6px;
         }
 
         .editor-panel::-webkit-scrollbar-track,
-        .sections-list::-webkit-scrollbar-track {
+        .sections-list::-webkit-scrollbar-track,
+        .code-box::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
 
         .editor-panel::-webkit-scrollbar-thumb,
-        .sections-list::-webkit-scrollbar-thumb {
+        .sections-list::-webkit-scrollbar-thumb,
+        .code-box::-webkit-scrollbar-thumb {
             background: #667eea;
             border-radius: 3px;
         }
@@ -401,6 +512,7 @@
                 <button class="btn-reset" onclick="resetAll()">🔄 ریست</button>
             </div>
             <button class="btn-test" onclick="testSite()">🧪 تست سایت در تب جدید</button>
+            <button class="btn-code" onclick="showCodeModal()">💻 نمایش کد برای GitHub</button>
         </div>
 
         <!-- Preview Panel -->
@@ -416,20 +528,25 @@
         </div>
     </div>
 
+    <!-- Code Modal -->
+    <div id="codeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💻 کد HTML برای GitHub</h2>
+                <button class="close-btn" onclick="closeCodeModal()">بستن</button>
+            </div>
+            <button class="copy-btn" onclick="copyCode()">📋 کپی کردن کد</button>
+            <div id="copyStatus"></div>
+            <div class="code-box">
+                <code id="codeDisplay"></code>
+            </div>
+            <button class="copy-btn" onclick="copyCode()">📋 کپی کردن کد</button>
+        </div>
+    </div>
+
     <script>
         let sections = [];
 
-        // اطلاعات پیش‌فرض
-        const defaultData = {
-            siteName: 'سایت حرفه‌ای من',
-            siteDesc: 'سایتی حرفه‌ای و شیک برای کسب و کار شما',
-            primaryColor: '#667eea',
-            phone: '09123456789',
-            email: 'info@example.com',
-            sections: []
-        };
-
-        // بارگذاری اطلاعات از localStorage
         function loadData() {
             const saved = localStorage.getItem('siteData');
             if (saved) {
@@ -443,7 +560,6 @@
             }
         }
 
-        // ذخیره اطلاعات
         function saveData() {
             const data = {
                 siteName: document.getElementById('siteName').value,
@@ -456,7 +572,6 @@
             localStorage.setItem('siteData', JSON.stringify(data));
         }
 
-        // به‌روز رسانی پیش‌نمایش
         function updatePreview() {
             const title = document.getElementById('siteName').value;
             const desc = document.getElementById('siteDesc').value;
@@ -467,7 +582,6 @@
             document.getElementById('previewTitle').textContent = title;
             document.getElementById('previewDesc').textContent = desc;
 
-            // به‌روز رسانی رنگ
             document.querySelectorAll('.website-header').forEach(el => {
                 el.style.background = `linear-gradient(135deg, ${color} 0%, #764ba2 100%)`;
             });
@@ -480,7 +594,6 @@
                 }
             });
 
-            // بخش‌های اضافی
             let previewHTML = `<div class="website-header" style="background: linear-gradient(135deg, ${color} 0%, #764ba2 100%);">
                 <h1>${title}</h1>
                 <p>${desc}</p>
@@ -514,7 +627,6 @@
             saveData();
         }
 
-        // اضافه کردن بخش
         function addSection() {
             const title = document.getElementById('newSectionTitle').value;
             const text = document.getElementById('newSectionText').value;
@@ -532,7 +644,6 @@
             updatePreview();
         }
 
-        // به‌روز رسانی لیست بخش‌ها
         function updateSectionsList() {
             const list = document.getElementById('sectionsList');
             if (sections.length === 0) {
@@ -552,15 +663,13 @@
             list.innerHTML = html;
         }
 
-        // حذف بخش
         function deleteSection(index) {
             sections.splice(index, 1);
             updateSectionsList();
             updatePreview();
         }
 
-        // دانلود سایت
-        function downloadSite() {
+        function generateHTML() {
             const siteName = document.getElementById('siteName').value || 'سایت_من';
             const siteDesc = document.getElementById('siteDesc').value;
             const color = document.getElementById('primaryColor').value;
@@ -577,152 +686,7 @@
                 `;
             });
 
-            const htmlContent = `<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${siteName}</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, ${color} 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-        .header {
-            background: linear-gradient(135deg, ${color} 0%, #764ba2 100%);
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-        }
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.95;
-        }
-        .content {
-            padding: 40px 20px;
-        }
-        .section {
-            margin-bottom: 30px;
-            padding: 25px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            border-right: 4px solid ${color};
-        }
-        .section h2 {
-            color: ${color};
-            margin-bottom: 15px;
-            font-size: 1.8em;
-        }
-        .section p {
-            color: #666;
-            line-height: 1.8;
-            font-size: 1em;
-        }
-        .contact {
-            background: white;
-            padding: 20px;
-            border-left: 3px solid ${color};
-            margin-bottom: 15px;
-            border-radius: 6px;
-        }
-        .footer {
-            background: #333;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            font-size: 0.95em;
-        }
-        .footer p {
-            margin: 5px 0;
-        }
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
-            }
-            .section {
-                padding: 15px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🌟 ${siteName}</h1>
-            <p>${siteDesc}</p>
-        </div>
-
-        <div class="content">
-            ${sectionsHTML}
-
-            ${phone || email ? `
-            <div class="section">
-                <h2>📞 تماس با ما</h2>
-                <div>
-                    ${phone ? `<div class="contact">📱 شماره تماس: <strong>${phone}</strong></div>` : ''}
-                    ${email ? `<div class="contact">📧 ایمیل: <strong>${email}</strong></div>` : ''}
-                </div>
-            </div>
-            ` : ''}
-        </div>
-
-        <div class="footer">
-            <p>✨ ساخته شده توسط <strong>Rob Lucci</strong></p>
-            <p>© 2026 تمام حقوق محفوظ است</p>
-        </div>
-    </div>
-</body>
-</html>`;
-
-            const element = document.createElement('a');
-            element.setAttribute('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent));
-            element.setAttribute('download', `${siteName}.html`);
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-
-            alert('✅ سایت شما با موفقیت دانلود شد!\n\nفایل: ' + siteName + '.html');
-        }
-
-        // تست سایت
-        function testSite() {
-            const siteName = document.getElementById('siteName').value || 'سایت_من';
-            const siteDesc = document.getElementById('siteDesc').value;
-            const color = document.getElementById('primaryColor').value;
-            const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
-
-            let sectionsHTML = '';
-            sections.forEach(section => {
-                sectionsHTML += `
-                    <div class="website-section">
-                        <h2>${section.title}</h2>
-                        <p>${section.text}</p>
-                    </div>
-                `;
-            });
-
-            const htmlContent = `<!DOCTYPE html>
+            return `<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -837,13 +801,56 @@
     </div>
 </body>
 </html>`;
+        }
 
+        function downloadSite() {
+            const siteName = document.getElementById('siteName').value || 'سایت_من';
+            const htmlContent = generateHTML();
+
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent));
+            element.setAttribute('download', `${siteName}.html`);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+
+            alert('✅ سایت شما با موفقیت دانلود شد!\n\nفایل: ' + siteName + '.html');
+        }
+
+        function testSite() {
+            const htmlContent = generateHTML();
             const blob = new Blob([htmlContent], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             window.open(url, '_blank');
         }
 
-        // ریست همه
+        function showCodeModal() {
+            const htmlContent = generateHTML();
+            document.getElementById('codeDisplay').textContent = htmlContent;
+            document.getElementById('codeModal').classList.add('show');
+            document.getElementById('copyStatus').innerHTML = '';
+        }
+
+        function closeCodeModal() {
+            document.getElementById('codeModal').classList.remove('show');
+        }
+
+        function copyCode() {
+            const codeElement = document.getElementById('codeDisplay');
+            const text = codeElement.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const statusDiv = document.getElementById('copyStatus');
+                statusDiv.innerHTML = '<div class="copy-success">✅ کد با موفقیت کپی شد!</div>';
+                setTimeout(() => {
+                    statusDiv.innerHTML = '';
+                }, 2000);
+            }).catch(err => {
+                alert('خطا در کپی کردن');
+            });
+        }
+
         function resetAll() {
             if (confirm('آیا می‌خواهید همه چیز ریست کنید؟')) {
                 sections = [];
