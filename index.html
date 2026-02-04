@@ -1,243 +1,621 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>One Dark Chat</title>
-  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet" />
-  <style>
-    body {
-      background: #121212;
-      color: #eee;
-      font-family: 'Vazir', sans-serif;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-      direction: rtl;
-    }
-    h1 {
-      text-align: center;
-      color: #ff4444;
-      text-shadow: 0 0 5px #ff4444aa;
-      margin-bottom: 5px;
-    }
-    .creator {
-      text-align: center;
-      font-size: 14px;
-      color: #888;
-      margin-bottom: 5px;
-    }
-    .version {
-      text-align: center;
-      font-size: 12px;
-      color: #555;
-      margin-bottom: 20px;
-    }
-    .story-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .story-btn {
-      background: #880000;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      font-size: 18px;
-      cursor: pointer;
-      text-align: right;
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
-    .story-btn:hover {
-      background: #aa0000;
-    }
-    #chat, #backBtn, #nextBtn {
-      display: none;
-    }
-    #chat {
-      background: #1e1e1e;
-      border-radius: 10px;
-      padding: 15px;
-      margin-top: 15px;
-      height: 400px;
-      overflow-y: auto;
-      box-shadow: 0 0 10px #880000aa;
-      display: flex;
-      flex-direction: column;
-      scroll-behavior: smooth;
-    }
-    .message {
-      max-width: 75%;
-      margin-bottom: 12px;
-      padding: 10px 14px;
-      border-radius: 15px;
-      line-height: 1.4;
-      font-size: 16px;
-      white-space: pre-wrap;
-      word-break: break-word;
-      user-select: text;
-    }
-    .left {
-      background: #2a2a2a;
-      align-self: flex-start;
-      border-top-left-radius: 0;
-    }
-    .right {
-      background: #880000;
-      align-self: flex-end;
-      border-top-right-radius: 0;
-    }
-    #nextBtn, #backBtn {
-      background: #880000;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 10px;
-      display: block;
-      user-select: none;
-      transition: background-color 0.3s ease;
-    }
-    #nextBtn:disabled {
-      background: #440000;
-      cursor: default;
-    }
-    #nextBtn:hover:not(:disabled),
-    #backBtn:hover {
-      background: #aa0000;
-    }
-    .submit-box {
-      background: #1b1b1b;
-      border: 1px solid #880000;
-      border-radius: 12px;
-      padding: 15px;
-      margin-top: 30px;
-      color: #ddd;
-      text-align: center;
-      box-shadow: 0 0 10px #88000055;
-      user-select: none;
-    }
-    .submit-box p {
-      margin: 10px 0;
-      font-size: 15px;
-      line-height: 1.6;
-    }
-    .discord-btn {
-      display: inline-block;
-      margin-top: 10px;
-      background: #ff4444;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: background-color 0.2s ease;
-    }
-    .discord-btn:hover {
-      background: #cc0000;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طراح سایت | ساخت سایت بدون کد</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 3px solid #764ba2;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+            min-height: 600px;
+        }
+
+        /* Templates Section */
+        .templates-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .template-list {
+            display: grid;
+            gap: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .template-item {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 5px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .template-item:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateX(-10px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .template-icon {
+            font-size: 2em;
+        }
+
+        .template-info h3 {
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .template-info p {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px dashed #667eea;
+        }
+
+        .preview-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .mobile-preview {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            min-height: 400px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid #667eea;
+        }
+
+        .preview-content {
+            text-align: center;
+        }
+
+        .preview-content h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .preview-content p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        /* Controls Section */
+        .controls-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 15px;
+            color: white;
+        }
+
+        .controls-section h2 {
+            margin-bottom: 20px;
+            font-size: 1.6em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            border: 2px solid white;
+        }
+
+        .btn-primary:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: #764ba2;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #764ba2;
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 1em;
+            border-top: 3px solid #667eea;
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 30px 40px;
+            background: #f9f9f9;
+        }
+
+        .feature {
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .feature p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll Bar */
+        .template-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .template-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .template-list::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .template-list::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    </style>
 </head>
 <body>
-  <h1>One Dark Chat</h1>
-  <div class="creator">ساخته شده توسط Rob Lucci</div>
-  <div class="version">نسخه 0.0.3</div>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎨 طراح سایت حرفه‌ای</h1>
+            <p>ساخت سایت شیک بدون نیاز به کد نویسی</p>
+        </div>
 
-  <div class="story-list" id="storyList"></div>
+        <!-- Features -->
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <h3>موبایل دوست</h3>
+                <p>تمام سایت‌ها به صورت خودکار برای موبایل بهینه می‌شوند</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">✨</div>
+                <h3>طراحی شیک</h3>
+                <p>قالب‌های مدرن و زیبا برای تمام انواع سایت</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>بسیار سریع</h3>
+                <p>بارگذاری تند و عملکرد بی‌نقص</p>
+            </div>
+        </div>
 
-  <div class="submit-box">
-    <p>🎙️ می‌خوای داستان خودتو اضافه کنی؟</p>
-    <p>وارد سرور دیسکورد ما شو و توی تیکت مخصوص داستان بنویس تا بررسی و اضافه بشه 👻</p>
-    <a href="https://discord.gg/pjF32Hy3vT" target="_blank" class="discord-btn" rel="noopener noreferrer">🚪 ورود به دیسکورد</a>
-  </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Templates -->
+            <div class="templates-section">
+                <h2>📋 قالب‌های آماده</h2>
+                <div class="template-list">
+                    <div class="template-item" onclick="selectTemplate('business')">
+                        <div class="template-icon">🏢</div>
+                        <div class="template-info">
+                            <h3>سایت شرکتی</h3>
+                            <p>برای معرفی شرکت و خدمات</p>
+                        </div>
+                    </div>
+                    <div class="template-item" onclick="selectTemplate('shop')">
+                        <div class="template-icon">🛍️</div>
+                        <div class="template-info">
+                            <h3>فروشگاه اینترنتی</h3>
+                            <p>برای فروش محصولات آنلاین</p>
+                        </div>
+                    </div>
+                    <div class="template-item" onclick="selectTemplate('blog')">
+                        <div class="template-icon">📝</div>
+                        <div class="template-info">
+                            <h3>وبلاگ شخصی</h3>
+                            <p>برای نوشتن و اشتراک‌گذاری</p>
+                        </div>
+                    </div>
+                    <div class="template-item" onclick="selectTemplate('portfolio')">
+                        <div class="template-icon">🎯</div>
+                        <div class="template-info">
+                            <h3>نمونه کارها</h3>
+                            <p>برای معرفی کارهای خود</p>
+                        </div>
+                    </div>
+                    <div class="template-item" onclick="selectTemplate('restaurant')">
+                        <div class="template-icon">🍽️</div>
+                        <div class="template-info">
+                            <h3>رستوران و کافه</h3>
+                            <p>برای معرفی منو و خدمات</p>
+                        </div>
+                    </div>
+                    <div class="template-item" onclick="selectTemplate('education')">
+                        <div class="template-icon">🎓</div>
+                        <div class="template-info">
+                            <h3>موسسه آموزشی</h3>
+                            <p>برای آموزش آنلاین</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-  <div id="chat" aria-live="polite" aria-atomic="false"></div>
-  <button id="nextBtn" onclick="showNextMessage()">پیام بعدی</button>
-  <button id="backBtn" onclick="goBack()">🔙 بازگشت به لیست داستان‌ها</button>
+            <!-- Preview -->
+            <div class="preview-section">
+                <h2>👁️ پیش‌نمایش</h2>
+                <div class="mobile-preview">
+                    <div class="preview-content">
+                        <h3 id="previewTitle">سایت شرکتی</h3>
+                        <p id="previewDesc">این یک پیش‌نمایش از سایت شما است. تمام تغییرات را در سمت چپ انجام دهید.</p>
+                        <button class="btn-primary">دیدن بیشتر</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <audio id="typeSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_bdcf544b7b.mp3" preload="auto"></audio>
+        <!-- Controls -->
+        <div class="controls-section">
+            <h2>⚙️ تنظیمات سایت</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label>نام سایت</label>
+                    <input type="text" id="siteName" placeholder="نام شرکت یا سایت خود را وارد کنید" value="سایت من">
+                </div>
+                <div class="form-group">
+                    <label>رنگ اصلی</label>
+                    <input type="color" id="primaryColor" value="#667eea">
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>توضیح سایت</label>
+                    <textarea id="siteDesc" placeholder="توضیحات کوتاه درباره سایت خود...">سایتی حرفه‌ای و شیک برای کسب و کار خود</textarea>
+                </div>
+                <div class="form-group">
+                    <label>شماره تماس</label>
+                    <input type="tel" id="phone" placeholder="مثال: 09123456789">
+                </div>
+                <div class="form-group">
+                    <label>ایمیل</label>
+                    <input type="email" id="email" placeholder="مثال: info@example.com">
+                </div>
+            </div>
 
-  <script src="stories.js"></script>
-  <script>
-    let currentStory = [];
-    let msgIndex = 0;
-    const storyList = document.getElementById('storyList');
-    const chat = document.getElementById('chat');
-    const nextBtn = document.getElementById('nextBtn');
-    const backBtn = document.getElementById('backBtn');
-    const typeSound = document.getElementById('typeSound');
-    let typingTimeout;
+            <div class="button-group">
+                <button class="btn-primary" onclick="downloadSite()">📥 دانلود سایت</button>
+                <button class="btn-secondary" onclick="previewSite()">👁️ نمایش پیش‌نمایش</button>
+            </div>
+        </div>
 
-    // ایجاد دکمه‌های داستان از آرایه stories
-    function renderStoryButtons() {
-      storyList.innerHTML = '';
-      stories.forEach((story, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'story-btn';
-        btn.textContent = `داستان شماره ${index + 1} 📖`;
-        btn.onclick = () => startStory(index);
-        storyList.appendChild(btn);
-      });
-      storyList.style.display = 'flex';
-    }
+        <!-- Footer -->
+        <div class="footer">
+            <p>✨ ساخته شده توسط <strong>Rob Lucci</strong> 🎨</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">© 2026 طراح سایت حرفه‌ای | تمام حقوق محفوظ است</p>
+        </div>
+    </div>
 
-    function startStory(index) {
-      currentStory = stories[index];
-      msgIndex = 0;
-      chat.innerHTML = '';
-      storyList.style.display = 'none';
-      chat.style.display = 'flex';
-      nextBtn.style.display = 'block';
-      backBtn.style.display = 'none';
-      nextBtn.disabled = true;
-      showNextMessage();
-    }
+    <script>
+        const templates = {
+            business: {
+                title: 'سایت شرکتی',
+                desc: 'یک سایت حرفه‌ای برای معرفی شرکت و خدمات خود'
+            },
+            shop: {
+                title: 'فروشگاه اینترنتی',
+                desc: 'سایتی مدرن برای فروش محصولات به صورت آنلاین'
+            },
+            blog: {
+                title: 'وبلاگ شخصی',
+                desc: 'سایتی زیبا برای اشتراک‌گذاری نوشته‌های خود'
+            },
+            portfolio: {
+                title: 'نمونه کارها',
+                desc: 'نمایش کارهای و پروژه‌های خود به صورت حرفه‌ای'
+            },
+            restaurant: {
+                title: 'رستوران و کافه',
+                desc: 'معرفی غذاها، منو و حجز رزرو به صورت آنلاین'
+            },
+            education: {
+                title: 'موسسه آموزشی',
+                desc: 'سایتی برای ارائه دوره‌های آموزشی آنلاین'
+            }
+        };
 
-    function showNextMessage() {
-      if (msgIndex >= currentStory.length) {
-        nextBtn.style.display = 'none';
-        backBtn.style.display = 'block';
-        return;
-      }
-      nextBtn.disabled = true;
-      const msg = currentStory[msgIndex++];
-      const div = document.createElement('div');
-      div.className = 'message ' + msg.from;
-      div.textContent = '';
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
-
-      let i = 0;
-      clearTimeout(typingTimeout);
-      function typeText() {
-        if (i < msg.text.length) {
-          div.textContent += msg.text.charAt(i++);
-          if (typeSound && i % 3 === 0) {
-            typeSound.currentTime = 0;
-            typeSound.play().catch(() => {});
-          }
-          typingTimeout = setTimeout(typeText, 30);
-          chat.scrollTop = chat.scrollHeight;
-        } else {
-          nextBtn.disabled = false;
+        function selectTemplate(template) {
+            const data = templates[template];
+            document.getElementById('previewTitle').textContent = data.title;
+            document.getElementById('previewDesc').textContent = data.desc;
         }
-      }
-      typeText();
-    }
 
-    function goBack() {
-      clearTimeout(typingTimeout);
-      storyList.style.display = 'flex';
-      chat.style.display = 'none';
-      backBtn.style.display = 'none';
-      nextBtn.style.display = 'none';
-    }
+        function previewSite() {
+            const siteName = document.getElementById('siteName').value || 'سایت من';
+            const siteDesc = document.getElementById('siteDesc').value || 'سایت حرفه‌ای من';
+            alert(`پیش‌نمایش سایت: ${siteName}\n\n${siteDesc}`);
+        }
 
-    renderStoryButtons();
-  </script>
+        function downloadSite() {
+            const siteName = document.getElementById('siteName').value || 'سایت_من';
+            const siteDesc = document.getElementById('siteDesc').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const color = document.getElementById('primaryColor').value;
+
+            const htmlContent = `<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>\${siteName}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, \${color} 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, \${color} 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .content {
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .content h2 {
+            color: \${color};
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        .content p {
+            color: #666;
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        .contact {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        .contact h3 {
+            color: \${color};
+            margin-bottom: 20px;
+        }
+        .contact-info {
+            display: grid;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .contact-item {
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid \${color};
+        }
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            .content h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 \${siteName}</h1>
+            <p>سایت حرفه‌ای و شیک</p>
+        </div>
+
+        <div class="content">
+            <h2>خوش‌آمدید!</h2>
+            <p>\${siteDesc}</p>
+            <p>ما در اینجا برای ارائه بهترین خدمات و محصولات هستیم.</p>
+
+            <div class="contact">
+                <h3>📞 تماس با ما</h3>
+                <div class="contact-info">
+                    \${phone ? \`<div class="contact-item">📱 شماره تماس: <strong>\${phone}</strong></div>\` : ''}
+                    \${email ? \`<div class="contact-item">📧 ایمیل: <strong>\${email}</strong></div>\` : ''}
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>✨ ساخته شده توسط <strong>Rob Lucci</strong></p>
+            <p>© 2026 تمام حقوق محفوظ است</p>
+        </div>
+    </div>
+</body>
+</html>`;
+
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent));
+            element.setAttribute('download', \`\${siteName}.html\`);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+
+            alert('✅ سایت شما با موفقیت دانلود شد!\\n\\nفایل: ' + siteName + '.html');
+        }
+
+        // Initialize
+        selectTemplate('business');
+    </script>
 </body>
 </html>
