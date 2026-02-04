@@ -35,12 +35,48 @@
 
         .editor-panel h1 {
             color: #667eea;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             font-size: 1.8em;
         }
 
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: bold;
+            color: #555;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-btn:hover {
+            background: #e9e9e9;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .section-group {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             background: #f9f9f9;
             padding: 20px;
             border-radius: 10px;
@@ -68,7 +104,6 @@
         input[type="text"],
         input[type="email"],
         input[type="tel"],
-        input[type="url"],
         input[type="color"],
         textarea,
         select {
@@ -113,6 +148,7 @@
         .btn-add {
             background: #667eea;
             color: white;
+            grid-column: 1 / -1;
         }
 
         .btn-add:hover {
@@ -124,25 +160,21 @@
         .btn-download {
             background: #28a745;
             color: white;
-            grid-column: 1;
         }
 
         .btn-download:hover {
             background: #218838;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
         }
 
         .btn-reset {
             background: #dc3545;
             color: white;
-            grid-column: 2;
         }
 
         .btn-reset:hover {
             background: #c82333;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
         }
 
         .btn-test {
@@ -154,7 +186,6 @@
         .btn-test:hover {
             background: #ffb300;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
         }
 
         .btn-code {
@@ -166,43 +197,98 @@
         .btn-code:hover {
             background: #138496;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
         }
 
-        .sections-list {
+        .items-list {
             background: white;
             border: 1px solid #ddd;
             border-radius: 6px;
-            max-height: 200px;
+            max-height: 300px;
             overflow-y: auto;
             margin-top: 15px;
         }
 
-        .section-item {
-            padding: 10px 15px;
+        .item {
+            padding: 12px 15px;
             border-bottom: 1px solid #eee;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
             background: white;
         }
 
-        .section-item:hover {
-            background: #f0f0f0;
+        .item:hover {
+            background: #f5f5f5;
         }
 
-        .section-item:last-child {
+        .item:last-child {
             border-bottom: none;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .item-text {
+            color: #888;
+            font-size: 0.85em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .item-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-small {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .btn-up {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-up:hover {
+            background: #138496;
+        }
+
+        .btn-down {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-down:hover {
+            background: #5a6268;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-edit:hover {
+            background: #ffb300;
         }
 
         .btn-delete {
             background: #dc3545;
             color: white;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85em;
         }
 
         .btn-delete:hover {
@@ -274,16 +360,23 @@
             font-size: 0.95em;
         }
 
-        .contact-info {
-            display: grid;
-            gap: 10px;
+        .website-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
         }
 
-        .contact-item {
-            padding: 12px;
-            background: white;
-            border-left: 3px solid #667eea;
-            border-radius: 4px;
+        .website-button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
         }
 
         .website-footer {
@@ -298,6 +391,13 @@
 
         .website-footer p {
             margin: 5px 0;
+        }
+
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
         }
 
         /* Modal */
@@ -371,10 +471,6 @@
             border: 1px solid #667eea;
         }
 
-        .code-box code {
-            word-break: break-all;
-        }
-
         .copy-btn {
             background: #28a745;
             color: white;
@@ -396,42 +492,6 @@
             margin-top: 10px;
         }
 
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .main-wrapper {
-                grid-template-columns: 1fr;
-            }
-
-            .editor-panel {
-                box-shadow: none;
-                border-bottom: 2px solid #ddd;
-            }
-
-            .preview-panel {
-                padding: 20px;
-                min-height: 600px;
-            }
-        }
-
-        .editor-panel::-webkit-scrollbar,
-        .sections-list::-webkit-scrollbar,
-        .code-box::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .editor-panel::-webkit-scrollbar-track,
-        .sections-list::-webkit-scrollbar-track,
-        .code-box::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        .editor-panel::-webkit-scrollbar-thumb,
-        .sections-list::-webkit-scrollbar-thumb,
-        .code-box::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 3px;
-        }
-
         .notice {
             background: #e7f3ff;
             border: 1px solid #b3d9ff;
@@ -441,6 +501,47 @@
             margin-bottom: 15px;
             font-size: 0.85em;
         }
+
+        .page-label {
+            background: #667eea;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-panel {
+                box-shadow: none;
+                border-bottom: 2px solid #ddd;
+            }
+        }
+
+        .editor-panel::-webkit-scrollbar,
+        .items-list::-webkit-scrollbar,
+        .code-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .editor-panel::-webkit-scrollbar-track,
+        .items-list::-webkit-scrollbar-track,
+        .code-box::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .editor-panel::-webkit-scrollbar-thumb,
+        .items-list::-webkit-scrollbar-thumb,
+        .code-box::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body>
@@ -449,70 +550,112 @@
         <div class="editor-panel">
             <h1>🎨 طراح سایت</h1>
             <div class="notice">
-                💡 تنظیمات را تغییر دهید و پیش‌نمایش به صورت لایو به‌روز می‌شود
+                💡 صفحات متعدد و بخش‌های قابل جابجایی
             </div>
 
-            <!-- Header Section -->
-            <div class="section-group">
-                <h3>📍 اطلاعات سایت</h3>
-                <div class="form-group">
-                    <label>نام سایت</label>
-                    <input type="text" id="siteName" value="سایت حرفه‌ای من" placeholder="نام سایت">
-                </div>
-                <div class="form-group">
-                    <label>توضیح کوتاه</label>
-                    <input type="text" id="siteDesc" value="سایتی حرفه‌ای و شیک برای کسب و کار شما" placeholder="توضیح سایت">
-                </div>
-                <div class="form-group">
-                    <label>رنگ اصلی</label>
-                    <input type="color" id="primaryColor" value="#667eea">
-                </div>
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('pages')">📄 صفحات</button>
+                <button class="tab-btn" onclick="switchTab('buttons')">🔘 دکمه‌ها</button>
             </div>
 
-            <!-- Contact Section -->
-            <div class="section-group">
-                <h3>📞 اطلاعات تماس</h3>
-                <div class="form-group">
-                    <label>شماره تماس</label>
-                    <input type="tel" id="phone" value="09123456789" placeholder="شماره تماس">
+            <!-- Pages Tab -->
+            <div id="pages" class="tab-content active">
+                <!-- Add Page -->
+                <div class="section-group">
+                    <h3>➕ صفحه جدید</h3>
+                    <div class="form-group">
+                        <label>نام صفحه</label>
+                        <input type="text" id="newPageName" placeholder="مثال: درباره ما">
+                    </div>
+                    <button class="btn-add" onclick="addPage()">➕ ایجاد صفحه</button>
                 </div>
-                <div class="form-group">
-                    <label>ایمیل</label>
-                    <input type="email" id="email" value="info@example.com" placeholder="ایمیل">
-                </div>
-            </div>
 
-            <!-- Add Section -->
-            <div class="section-group">
-                <h3>➕ اضافه کردن بخش</h3>
-                <div class="form-group">
-                    <label>عنوان بخش</label>
-                    <input type="text" id="newSectionTitle" placeholder="عنوان بخش">
+                <!-- Pages List -->
+                <div class="section-group">
+                    <h3>📋 صفحات</h3>
+                    <div class="items-list" id="pagesList"></div>
                 </div>
-                <div class="form-group">
-                    <label>متن بخش</label>
-                    <textarea id="newSectionText" placeholder="متن بخش..."></textarea>
-                </div>
-                <button class="btn-add" onclick="addSection()">➕ اضافه کردن بخش</button>
-            </div>
 
-            <!-- Sections List -->
-            <div class="section-group">
-                <h3>📋 بخش‌های اضافه شده</h3>
-                <div class="sections-list" id="sectionsList">
-                    <div style="padding: 15px; color: #999; text-align: center;">
-                        هنوز بخشی اضافه نشده‌است
+                <!-- Current Page Edit -->
+                <div class="section-group" id="currentPageSection">
+                    <div class="page-label" id="pageLabel">صفحه: خانه</div>
+                    
+                    <h3>📍 تنظیمات صفحه</h3>
+                    <div class="form-group">
+                        <label>عنوان صفحه</label>
+                        <input type="text" id="pageTitle" value="سایت حرفه‌ای من">
+                    </div>
+                    <div class="form-group">
+                        <label>توضیح صفحه</label>
+                        <input type="text" id="pageDesc" value="سایتی حرفه‌ای و شیک برای کسب و کار شما">
+                    </div>
+                    <div class="form-group">
+                        <label>رنگ اصلی</label>
+                        <input type="color" id="pageColor" value="#667eea">
+                    </div>
+
+                    <!-- Add Section -->
+                    <h3 style="margin-top: 20px;">➕ بخش جدید</h3>
+                    <div class="form-group">
+                        <label>عنوان بخش</label>
+                        <input type="text" id="newSectionTitle" placeholder="عنوان بخش">
+                    </div>
+                    <div class="form-group">
+                        <label>متن بخش</label>
+                        <textarea id="newSectionText" placeholder="متن بخش..."></textarea>
+                    </div>
+                    <button class="btn-add" onclick="addSection()">➕ اضافه کردن بخش</button>
+
+                    <!-- Sections List -->
+                    <h3 style="margin-top: 20px;">📋 بخش‌های این صفحه</h3>
+                    <div class="items-list" id="sectionsList"></div>
+                </div>
+
+                <!-- Contact Section (Home Page Only) -->
+                <div class="section-group" id="contactSection">
+                    <h3>📞 اطلاعات تماس</h3>
+                    <div class="form-group">
+                        <label>شماره تماس</label>
+                        <input type="tel" id="phone" value="09123456789" placeholder="شماره تماس">
+                    </div>
+                    <div class="form-group">
+                        <label>ایمیل</label>
+                        <input type="email" id="email" value="info@example.com" placeholder="ایمیل">
                     </div>
                 </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group" style="margin-top: 30px;">
+                    <button class="btn-download" onclick="downloadSite()">📥 دانلود سایت</button>
+                    <button class="btn-reset" onclick="resetAll()">🔄 ریست</button>
+                </div>
+                <button class="btn-test" onclick="testSite()">🧪 تست سایت</button>
+                <button class="btn-code" onclick="showCodeModal()">💻 نمایش کد</button>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="button-group">
-                <button class="btn-download" onclick="downloadSite()">📥 دانلود سایت</button>
-                <button class="btn-reset" onclick="resetAll()">🔄 ریست</button>
+            <!-- Buttons Tab -->
+            <div id="buttons" class="tab-content">
+                <div class="section-group">
+                    <h3>➕ دکمه جدید</h3>
+                    <div class="form-group">
+                        <label>متن دکمه</label>
+                        <input type="text" id="newButtonText" placeholder="مثال: درباره ما">
+                    </div>
+                    <div class="form-group">
+                        <label>لینک/صفحه</label>
+                        <select id="newButtonLink">
+                            <option value="">انتخاب صفحه...</option>
+                        </select>
+                    </div>
+                    <button class="btn-add" onclick="addButton()">➕ اضافه کردن دکمه</button>
+                </div>
+
+                <div class="section-group">
+                    <h3>🔘 دکمه‌های موجود</h3>
+                    <div class="items-list" id="buttonsList"></div>
+                </div>
             </div>
-            <button class="btn-test" onclick="testSite()">🧪 تست سایت در تب جدید</button>
-            <button class="btn-code" onclick="showCodeModal()">💻 نمایش کد برای GitHub</button>
         </div>
 
         <!-- Preview Panel -->
@@ -545,86 +688,133 @@
     </div>
 
     <script>
-        let sections = [];
+        let pages = {
+            'home': {
+                title: 'سایت حرفه‌ای من',
+                desc: 'سایتی حرفه‌ای و شیک برای کسب و کار شما',
+                color: '#667eea',
+                sections: [],
+                isHome: true
+            }
+        };
+        let buttons = [];
+        let currentPage = 'home';
 
         function loadData() {
             const saved = localStorage.getItem('siteData');
             if (saved) {
                 const data = JSON.parse(saved);
-                Object.keys(data).forEach(key => {
-                    if (document.getElementById(key)) {
-                        document.getElementById(key).value = data[key];
-                    }
-                });
-                sections = data.sections || [];
+                pages = data.pages || pages;
+                buttons = data.buttons || [];
+                currentPage = data.currentPage || 'home';
             }
         }
 
         function saveData() {
-            const data = {
-                siteName: document.getElementById('siteName').value,
-                siteDesc: document.getElementById('siteDesc').value,
-                primaryColor: document.getElementById('primaryColor').value,
+            localStorage.setItem('siteData', JSON.stringify({
+                pages,
+                buttons,
+                currentPage,
                 phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value,
-                sections: sections
-            };
-            localStorage.setItem('siteData', JSON.stringify(data));
+                email: document.getElementById('email').value
+            }));
         }
 
-        function updatePreview() {
-            const title = document.getElementById('siteName').value;
-            const desc = document.getElementById('siteDesc').value;
-            const color = document.getElementById('primaryColor').value;
-            const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
 
-            document.getElementById('previewTitle').textContent = title;
-            document.getElementById('previewDesc').textContent = desc;
+            if (tab === 'buttons') {
+                updateButtonLinkSelect();
+                updateButtonsList();
+            } else {
+                updatePagesList();
+                updateSectionsList();
+            }
+        }
 
-            document.querySelectorAll('.website-header').forEach(el => {
-                el.style.background = `linear-gradient(135deg, ${color} 0%, #764ba2 100%)`;
-            });
+        function addPage() {
+            const name = document.getElementById('newPageName').value;
+            if (!name) {
+                alert('⚠️ نام صفحه را وارد کنید');
+                return;
+            }
 
-            document.querySelectorAll('.website-section h2, .website-section').forEach(el => {
-                if (el.tagName === 'H2') {
-                    el.style.color = color;
-                } else if (el.style) {
-                    el.style.borderRightColor = color;
-                }
-            });
+            const id = name.replace(/\s+/g, '_').toLowerCase();
+            if (pages[id]) {
+                alert('⚠️ این صفحه قبلاً موجود است');
+                return;
+            }
 
-            let previewHTML = `<div class="website-header" style="background: linear-gradient(135deg, ${color} 0%, #764ba2 100%);">
-                <h1>${title}</h1>
-                <p>${desc}</p>
-            </div>`;
+            pages[id] = {
+                title: name,
+                desc: 'توضیح صفحه',
+                color: '#667eea',
+                sections: [],
+                isHome: false
+            };
 
-            sections.forEach(section => {
-                previewHTML += `
-                    <div class="website-section" style="border-right-color: ${color};">
-                        <h2 style="color: ${color};">${section.title}</h2>
-                        <p>${section.text}</p>
+            document.getElementById('newPageName').value = '';
+            updatePagesList();
+            updateButtonLinkSelect();
+            saveData();
+        }
+
+        function selectPage(pageId) {
+            currentPage = pageId;
+            const page = pages[pageId];
+
+            document.getElementById('pageLabel').textContent = `صفحه: ${page.title}`;
+            document.getElementById('pageTitle').value = page.title;
+            document.getElementById('pageDesc').value = page.desc;
+            document.getElementById('pageColor').value = page.color;
+
+            document.getElementById('contactSection').style.display = page.isHome ? 'block' : 'none';
+
+            updateSectionsList();
+            updatePreview();
+            saveData();
+        }
+
+        function deletePage(pageId) {
+            if (pageId === 'home') {
+                alert('⚠️ نمی‌توان صفحه خانه را حذف کرد');
+                return;
+            }
+
+            if (confirm('آیا می‌خواهید این صفحه را حذف کنید؟')) {
+                delete pages[pageId];
+                currentPage = 'home';
+                selectPage('home');
+                updatePagesList();
+                updateButtonLinkSelect();
+                saveData();
+            }
+        }
+
+        function updatePagesList() {
+            const list = document.getElementById('pagesList');
+            let html = '';
+
+            Object.keys(pages).forEach(id => {
+                const page = pages[id];
+                html += `
+                    <div class="item">
+                        <div class="item-info">
+                            <div class="item-title">${page.title}</div>
+                            <div class="item-text">${page.desc}</div>
+                        </div>
+                        <div class="item-buttons">
+                            <button class="btn-small btn-edit" onclick="selectPage('${id}')">انتخاب</button>
+                            ${id !== 'home' ? `<button class="btn-small btn-delete" onclick="deletePage('${id}')">حذف</button>` : ''}
+                        </div>
                     </div>
                 `;
             });
 
-            if (phone || email) {
-                previewHTML += `<div class="website-section" style="border-right-color: ${color};">
-                    <h2 style="color: ${color};">📞 تماس با ما</h2>
-                    <div class="contact-info">
-                        ${phone ? `<div class="contact-item" style="border-left-color: ${color};">📱 ${phone}</div>` : ''}
-                        ${email ? `<div class="contact-item" style="border-left-color: ${color};">📧 ${email}</div>` : ''}
-                    </div>
-                </div>`;
-            }
-
-            previewHTML += `<div class="website-footer">
-                <p>✨ ساخته شده توسط <strong>Rob Lucci</strong></p>
-                <p>© 2026 تمام حقوق محفوظ است</p>
-            </div>`;
-
-            document.getElementById('previewContent').innerHTML = previewHTML;
-            saveData();
+            list.innerHTML = html || '<div style="padding: 15px; color: #999;">صفحه‌ای موجود نیست</div>';
         }
 
         function addSection() {
@@ -632,66 +822,223 @@
             const text = document.getElementById('newSectionText').value;
 
             if (!title || !text) {
-                alert('⚠️ لطفا عنوان و متن بخش را وارد کنید');
+                alert('⚠️ عنوان و متن بخش را وارد کنید');
                 return;
             }
 
-            sections.push({ title, text });
+            pages[currentPage].sections.push({ title, text });
             document.getElementById('newSectionTitle').value = '';
             document.getElementById('newSectionText').value = '';
 
             updateSectionsList();
             updatePreview();
+            saveData();
+        }
+
+        function moveSection(index, direction) {
+            const sections = pages[currentPage].sections;
+            if (direction === 'up' && index > 0) {
+                [sections[index], sections[index - 1]] = [sections[index - 1], sections[index]];
+            } else if (direction === 'down' && index < sections.length - 1) {
+                [sections[index], sections[index + 1]] = [sections[index + 1], sections[index]];
+            }
+            updateSectionsList();
+            updatePreview();
+            saveData();
+        }
+
+        function deleteSection(index) {
+            pages[currentPage].sections.splice(index, 1);
+            updateSectionsList();
+            updatePreview();
+            saveData();
         }
 
         function updateSectionsList() {
             const list = document.getElementById('sectionsList');
+            const sections = pages[currentPage].sections;
+
             if (sections.length === 0) {
-                list.innerHTML = '<div style="padding: 15px; color: #999; text-align: center;">هنوز بخشی اضافه نشده‌است</div>';
+                list.innerHTML = '<div style="padding: 15px; color: #999;">بخشی اضافه نشده‌است</div>';
                 return;
             }
 
             let html = '';
             sections.forEach((section, index) => {
                 html += `
-                    <div class="section-item">
-                        <span>${index + 1}. ${section.title}</span>
-                        <button class="btn-delete" onclick="deleteSection(${index})">حذف</button>
+                    <div class="item">
+                        <div class="item-info">
+                            <div class="item-title">${section.title}</div>
+                            <div class="item-text">${section.text.substring(0, 50)}...</div>
+                        </div>
+                        <div class="item-buttons">
+                            ${index > 0 ? `<button class="btn-small btn-up" onclick="moveSection(${index}, 'up')">▲</button>` : ''}
+                            ${index < sections.length - 1 ? `<button class="btn-small btn-down" onclick="moveSection(${index}, 'down')">▼</button>` : ''}
+                            <button class="btn-small btn-delete" onclick="deleteSection(${index})">حذف</button>
+                        </div>
                     </div>
                 `;
             });
+
             list.innerHTML = html;
         }
 
-        function deleteSection(index) {
-            sections.splice(index, 1);
-            updateSectionsList();
+        function addButton() {
+            const text = document.getElementById('newButtonText').value;
+            const link = document.getElementById('newButtonLink').value;
+
+            if (!text || !link) {
+                alert('⚠️ متن و صفحه را انتخاب کنید');
+                return;
+            }
+
+            buttons.push({ text, link });
+            document.getElementById('newButtonText').value = '';
+            document.getElementById('newButtonLink').value = '';
+
+            updateButtonsList();
             updatePreview();
+            saveData();
         }
 
-        function generateHTML() {
-            const siteName = document.getElementById('siteName').value || 'سایت_من';
-            const siteDesc = document.getElementById('siteDesc').value;
-            const color = document.getElementById('primaryColor').value;
-            const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
+        function deleteButton(index) {
+            buttons.splice(index, 1);
+            updateButtonsList();
+            updatePreview();
+            saveData();
+        }
 
-            let sectionsHTML = '';
-            sections.forEach(section => {
-                sectionsHTML += `
-                    <div class="website-section">
-                        <h2>${section.title}</h2>
+        function updateButtonLinkSelect() {
+            const select = document.getElementById('newButtonLink');
+            select.innerHTML = '<option value="">انتخاب صفحه...</option>';
+
+            Object.keys(pages).forEach(id => {
+                const page = pages[id];
+                select.innerHTML += `<option value="${id}">${page.title}</option>`;
+            });
+        }
+
+        function updateButtonsList() {
+            const list = document.getElementById('buttonsList');
+
+            if (buttons.length === 0) {
+                list.innerHTML = '<div style="padding: 15px; color: #999;">دکمه‌ای اضافه نشده‌است</div>';
+                return;
+            }
+
+            let html = '';
+            buttons.forEach((btn, index) => {
+                const pageName = pages[btn.link]?.title || 'نامشخص';
+                html += `
+                    <div class="item">
+                        <div class="item-info">
+                            <div class="item-title">${btn.text}</div>
+                            <div class="item-text">→ ${pageName}</div>
+                        </div>
+                        <div class="item-buttons">
+                            <button class="btn-small btn-delete" onclick="deleteButton(${index})">حذف</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+        }
+
+        function updatePreview() {
+            const page = pages[currentPage];
+            const color = document.getElementById('pageColor').value;
+
+            let html = `<div class="website-header" style="background: linear-gradient(135deg, ${color} 0%, #764ba2 100%);">
+                <h1>${page.title}</h1>
+                <p>${page.desc}</p>
+            </div>`;
+
+            // دکمه‌ها
+            if (buttons.length > 0) {
+                html += `<div class="nav-buttons">`;
+                buttons.forEach(btn => {
+                    html += `<button class="website-button" style="background: ${color};">${btn.text}</button>`;
+                });
+                html += `</div>`;
+            }
+
+            // بخش‌ها
+            page.sections.forEach(section => {
+                html += `
+                    <div class="website-section" style="border-right-color: ${color};">
+                        <h2 style="color: ${color};">${section.title}</h2>
                         <p>${section.text}</p>
                     </div>
                 `;
             });
 
-            return `<!DOCTYPE html>
+            // اطلاعات تماس (صفحه خانه)
+            if (page.isHome) {
+                const phone = document.getElementById('phone').value;
+                const email = document.getElementById('email').value;
+
+                if (phone || email) {
+                    html += `<div class="website-section" style="border-right-color: ${color};">
+                        <h2 style="color: ${color};">📞 تماس با ما</h2>
+                        ${phone ? `<p>📱 شماره تماس: <strong>${phone}</strong></p>` : ''}
+                        ${email ? `<p>📧 ایمیل: <strong>${email}</strong></p>` : ''}
+                    </div>`;
+                }
+            }
+
+            html += `<div class="website-footer">
+                <p>✨ ساخته شده توسط <strong>Rob Lucci</strong></p>
+                <p>© 2026</p>
+            </div>`;
+
+            document.getElementById('previewContent').innerHTML = html;
+        }
+
+        function generateHTML() {
+            let navigationHTML = '';
+            if (buttons.length > 0) {
+                navigationHTML = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 20px 0;">';
+                buttons.forEach(btn => {
+                    navigationHTML += `<a href="#" style="display: inline-block; padding: 12px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; text-align: center; font-weight: bold;">${btn.text}</a>`;
+                });
+                navigationHTML += '</div>';
+            }
+
+            let pagesHTML = '';
+            Object.keys(pages).forEach(id => {
+                const page = pages[id];
+                let sectionsHTML = '';
+                page.sections.forEach(section => {
+                    sectionsHTML += `
+                        <div style="margin-bottom: 30px; padding: 25px; background: #f9f9f9; border-radius: 10px; border-right: 4px solid #667eea;">
+                            <h2 style="color: #667eea; margin-bottom: 15px; font-size: 1.8em;">${section.title}</h2>
+                            <p style="color: #666; line-height: 1.8;">${section.text}</p>
+                        </div>
+                    `;
+                });
+
+                pagesHTML += `
+                    <div id="page-${id}" style="padding: 40px 20px;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 20px; text-align: center; margin-bottom: 30px; border-radius: 10px;">
+                            <h1 style="font-size: 2.5em; margin-bottom: 10px;">${page.title}</h1>
+                            <p style="font-size: 1.1em; opacity: 0.95;">${page.desc}</p>
+                        </div>
+                        ${navigationHTML}
+                        ${sectionsHTML}
+                    </div>
+                `;
+            });
+
+            const phone = document.getElementById('phone')?.value || '';
+            const email = document.getElementById('email')?.value || '';
+
+            const htmlContent = `<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${siteName}</title>
+    <title>سایت حرفه‌ای</title>
     <style>
         * {
             margin: 0;
@@ -700,9 +1047,9 @@
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, ${color} 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            color: #333;
         }
         .container {
             max-width: 1200px;
@@ -710,112 +1057,49 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-        .header {
-            background: linear-gradient(135deg, ${color} 0%, #764ba2 100%);
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-        }
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.95;
-        }
-        .content {
-            padding: 40px 20px;
-        }
-        .website-section {
-            margin-bottom: 30px;
-            padding: 25px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            border-right: 4px solid ${color};
-        }
-        .website-section h2 {
-            color: ${color};
-            margin-bottom: 15px;
-            font-size: 1.8em;
-        }
-        .website-section p {
-            color: #666;
-            line-height: 1.8;
-            font-size: 1em;
-        }
-        .contact {
-            background: white;
-            padding: 20px;
-            border-left: 3px solid ${color};
-            margin-bottom: 15px;
-            border-radius: 6px;
+            min-height: 100vh;
         }
         .footer {
             background: #333;
             color: white;
             text-align: center;
             padding: 20px;
-            font-size: 0.95em;
+            margin-top: 30px;
         }
         .footer p {
             margin: 5px 0;
         }
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
-            }
-            .website-section {
-                padding: 15px;
+            .container {
+                border-radius: 0;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🌟 ${siteName}</h1>
-            <p>${siteDesc}</p>
-        </div>
-
-        <div class="content">
-            ${sectionsHTML}
-
-            ${phone || email ? `
-            <div class="website-section">
-                <h2>📞 تماس با ما</h2>
-                <div>
-                    ${phone ? `<div class="contact">📱 شماره تماس: <strong>${phone}</strong></div>` : ''}
-                    ${email ? `<div class="contact">📧 ایمیل: <strong>${email}</strong></div>` : ''}
-                </div>
-            </div>
-            ` : ''}
-        </div>
-
+        ${pagesHTML}
         <div class="footer">
             <p>✨ ساخته شده توسط <strong>Rob Lucci</strong></p>
-            <p>© 2026 تمام حقوق محفوظ است</p>
+            <p>© 2026</p>
         </div>
     </div>
 </body>
 </html>`;
+
+            return htmlContent;
         }
 
         function downloadSite() {
-            const siteName = document.getElementById('siteName').value || 'سایت_من';
             const htmlContent = generateHTML();
-
             const element = document.createElement('a');
             element.setAttribute('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent));
-            element.setAttribute('download', `${siteName}.html`);
+            element.setAttribute('download', 'my-website.html');
             element.style.display = 'none';
             document.body.appendChild(element);
             element.click();
             document.body.removeChild(element);
-
-            alert('✅ سایت شما با موفقیت دانلود شد!\n\nفایل: ' + siteName + '.html');
+            alert('✅ سایت شما دانلود شد!');
         }
 
         function testSite() {
@@ -829,7 +1113,6 @@
             const htmlContent = generateHTML();
             document.getElementById('codeDisplay').textContent = htmlContent;
             document.getElementById('codeModal').classList.add('show');
-            document.getElementById('copyStatus').innerHTML = '';
         }
 
         function closeCodeModal() {
@@ -837,39 +1120,57 @@
         }
 
         function copyCode() {
-            const codeElement = document.getElementById('codeDisplay');
-            const text = codeElement.textContent;
-
+            const text = document.getElementById('codeDisplay').textContent;
             navigator.clipboard.writeText(text).then(() => {
                 const statusDiv = document.getElementById('copyStatus');
-                statusDiv.innerHTML = '<div class="copy-success">✅ کد با موفقیت کپی شد!</div>';
-                setTimeout(() => {
-                    statusDiv.innerHTML = '';
-                }, 2000);
-            }).catch(err => {
-                alert('خطا در کپی کردن');
+                statusDiv.innerHTML = '<div class="copy-success">✅ کد کپی شد!</div>';
+                setTimeout(() => { statusDiv.innerHTML = ''; }, 2000);
             });
         }
 
         function resetAll() {
             if (confirm('آیا می‌خواهید همه چیز ریست کنید؟')) {
-                sections = [];
                 localStorage.removeItem('siteData');
                 location.reload();
             }
         }
 
         // Event Listeners
-        document.getElementById('siteName').addEventListener('input', updatePreview);
-        document.getElementById('siteDesc').addEventListener('input', updatePreview);
-        document.getElementById('primaryColor').addEventListener('input', updatePreview);
-        document.getElementById('phone').addEventListener('input', updatePreview);
-        document.getElementById('email').addEventListener('input', updatePreview);
+        document.getElementById('pageTitle').addEventListener('input', e => {
+            pages[currentPage].title = e.target.value;
+            updatePagesList();
+            updatePreview();
+            saveData();
+        });
+
+        document.getElementById('pageDesc').addEventListener('input', e => {
+            pages[currentPage].desc = e.target.value;
+            updatePreview();
+            saveData();
+        });
+
+        document.getElementById('pageColor').addEventListener('input', e => {
+            pages[currentPage].color = e.target.value;
+            updatePreview();
+            saveData();
+        });
+
+        document.getElementById('phone').addEventListener('input', e => {
+            updatePreview();
+            saveData();
+        });
+
+        document.getElementById('email').addEventListener('input', e => {
+            updatePreview();
+            saveData();
+        });
 
         // Initialize
         loadData();
-        updatePreview();
-        updateSectionsList();
+        selectPage(currentPage);
+        updatePagesList();
+        updateButtonLinkSelect();
+        updateButtonsList();
     </script>
 </body>
 </html>
