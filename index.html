@@ -1003,8 +1003,14 @@
 
                     <div id="buttonLinkField" style="display: none;">
                         <div class="form-group">
-                            <label>آدرس</label>
+                            <label>آدرس وب</label>
                             <input type="url" id="newButtonURL" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label>یا انتخاب صفحه</label>
+                            <select id="newButtonLinkPage">
+                                <option value="">انتخاب صفحه...</option>
+                            </select>
                         </div>
                     </div>
 
@@ -1337,8 +1343,15 @@
                 link = document.getElementById('newButtonLink').value;
                 if (!link) return;
             } else if (type === 'link') {
-                link = document.getElementById('newButtonURL').value;
-                if (!link) return;
+                const url = document.getElementById('newButtonURL').value;
+                const linkPage = document.getElementById('newButtonLinkPage').value;
+                if (url) {
+                    link = url;
+                } else if (linkPage) {
+                    link = linkPage;
+                } else {
+                    return;
+                }
             } else if (type === 'notification') {
                 link = document.getElementById('newButtonMessage').value;
                 if (!link) return;
@@ -1347,6 +1360,7 @@
             buttons.push({ text, type, link });
             document.getElementById('newButtonText').value = '';
             document.getElementById('newButtonURL').value = '';
+            document.getElementById('newButtonLinkPage').value = '';
             document.getElementById('newButtonMessage').value = '';
             updateButtonsList();
             updatePreview();
@@ -1364,9 +1378,14 @@
 
         function updateButtonLinkSelect() {
             const sel = document.getElementById('newButtonLink');
+            const linkPageSel = document.getElementById('newButtonLinkPage');
+            
             sel.innerHTML = '<option value="">انتخاب...</option>';
+            linkPageSel.innerHTML = '<option value="">انتخاب صفحه...</option>';
+            
             Object.keys(pages).forEach(id => {
                 sel.innerHTML += `<option value="${id}">${pages[id].title}</option>`;
+                linkPageSel.innerHTML += `<option value="${id}">#page-${id}</option>`;
             });
         }
 
@@ -1381,8 +1400,14 @@
             buttons.forEach((b, i) => {
                 let info = '';
                 if (b.type === 'page') info = `📄 ${pages[b.link]?.title || 'خطا'}`;
-                else if (b.type === 'link') info = `🔗 لینک`;
-                else info = `💬 پیام`;
+                else if (b.type === 'link') {
+                    // چک کردن اگر لینک صفحه‌ای است
+                    if (pages[b.link]) {
+                        info = `📄 ${pages[b.link].title}`;
+                    } else {
+                        info = `🔗 لینک خارجی`;
+                    }
+                } else info = `💬 پیام`;
 
                 html += `
                     <div class="item">
@@ -1448,7 +1473,13 @@
                 selectPage(b.link);
                 showNotification(`📄 ${pages[b.link].title}`);
             } else if (b.type === 'link') {
-                showNotification(`🔗 لینک باز می‌شود`);
+                // چک کردن اگر لینک صفحه‌ای است
+                if (pages[b.link]) {
+                    selectPage(b.link);
+                    showNotification(`📄 ${pages[b.link].title}`);
+                } else {
+                    showNotification(`🔗 لینک باز می‌شود`);
+                }
             } else {
                 showNotification(`💬 ${b.link}`);
             }
@@ -1465,7 +1496,12 @@
                         if (b.type === 'page') {
                             buttonsHTML += `<a href="#page-${b.link}" style="padding:12px;background:#e94560;color:white;text-decoration:none;border-radius:6px;text-align:center;font-weight:bold;">${b.text}</a>`;
                         } else if (b.type === 'link') {
-                            buttonsHTML += `<a href="${b.link}" target="_blank" style="padding:12px;background:#e94560;color:white;text-decoration:none;border-radius:6px;text-align:center;font-weight:bold;">${b.text}</a>`;
+                            // چک کردن اگر لینک صفحه‌ای است
+                            if (pages[b.link]) {
+                                buttonsHTML += `<a href="#page-${b.link}" style="padding:12px;background:#e94560;color:white;text-decoration:none;border-radius:6px;text-align:center;font-weight:bold;">${b.text}</a>`;
+                            } else {
+                                buttonsHTML += `<a href="${b.link}" target="_blank" style="padding:12px;background:#e94560;color:white;text-decoration:none;border-radius:6px;text-align:center;font-weight:bold;">${b.text}</a>`;
+                            }
                         }
                     });
                     buttonsHTML += '</div>';
