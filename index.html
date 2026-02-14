@@ -16,9 +16,10 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #1a1a2e;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
             color: #e0e0e0;
+            overflow: hidden;
         }
 
         /* ===== LOADING ===== */
@@ -28,13 +29,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 9999;
             opacity: 1;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .loader.hidden {
@@ -47,9 +48,9 @@
         }
 
         .loader-icon {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 20px;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
             position: relative;
         }
 
@@ -60,10 +61,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border: 4px solid #e94560;
+            border: 3px solid rgba(233, 69, 96, 0.2);
             border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s linear infinite;
+            animation: spin 2s linear infinite;
         }
 
         .loader-icon::after {
@@ -71,12 +71,12 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            width: 40px;
-            height: 40px;
-            border: 3px solid #3498db;
+            width: 60px;
+            height: 60px;
+            border: 3px solid transparent;
+            border-top-color: #ff6b6b;
             border-radius: 50%;
-            border-right-color: transparent;
-            animation: spin 2s linear infinite reverse;
+            animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
@@ -84,86 +84,60 @@
         }
 
         .loader-text {
-            color: #e94560;
+            color: #ff6b6b;
             font-weight: 600;
-            font-size: 1.1em;
-            letter-spacing: 1px;
+            font-size: 1.2em;
+            letter-spacing: 2px;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
-        .loader-dots {
-            display: inline-block;
-            margin-left: 5px;
-        }
-
-        .loader-dots span {
-            animation: blink 1.4s infinite;
-        }
-
-        .loader-dots span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .loader-dots span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes blink {
-            0%, 60%, 100% { opacity: 0.3; }
-            30% { opacity: 1; }
-        }
-
+        /* ===== MAIN CONTAINER ===== */
         .container {
             display: grid;
             grid-template-columns: 320px 1fr 420px;
             min-height: 100vh;
             gap: 0;
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* ===== SIDEBAR ===== */
         .sidebar {
-            background: linear-gradient(180deg, #16213e 0%, #0f3460 100%);
+            background: linear-gradient(to bottom, rgba(20, 20, 40, 0.95), rgba(15, 15, 35, 0.95));
+            backdrop-filter: blur(20px);
             padding: 0;
             overflow-y: auto;
-            box-shadow: 8px 0 25px rgba(0, 0, 0, 0.5);
-            border-right: 1px solid #e94560;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border-right: 1px solid rgba(255, 107, 107, 0.1);
             display: flex;
             flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .sidebar-header {
             padding: 30px 20px;
-            background: linear-gradient(135deg, #e94560 0%, #c23030 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
             text-align: center;
-            border-bottom: 2px solid #e94560;
+            border-bottom: none;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
         }
 
         .sidebar-header h1 {
-            font-size: 1.4em;
+            font-size: 1.5em;
             margin-bottom: 5px;
             letter-spacing: 1px;
-            animation: slideDown 0.6s ease;
+            font-weight: 700;
+            animation: slideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .sidebar-header p {
             font-size: 0.85em;
             opacity: 0.95;
-            animation: slideDown 0.8s ease;
-        }
-
-        .sidebar-header p:last-child {
-            font-size: 0.7em;
-            margin-top: 8px;
-            opacity: 0.9;
+            animation: slideDown 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes slideDown {
@@ -178,29 +152,32 @@
         }
 
         .sidebar-content {
-            padding: 20px;
+            padding: 25px;
             flex: 1;
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 107, 107, 0.3) transparent;
         }
 
         .sidebar-footer {
-            padding: 15px;
-            border-top: 2px solid #e94560;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             text-align: center;
             font-size: 0.75em;
-            opacity: 0.8;
+            opacity: 0.7;
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .section-title {
             font-size: 0.75em;
-            font-weight: bold;
-            margin: 25px 0 12px 0;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #e94560;
+            font-weight: 700;
+            margin: 20px 0 12px 0;
+            padding-bottom: 10px;
+            border-bottom: 1.5px solid #ff6b6b;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            color: #e94560;
-            animation: slideRight 0.5s ease;
+            color: #ff6b6b;
+            animation: slideRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes slideRight {
@@ -215,59 +192,66 @@
         }
 
         .form-group {
-            margin-bottom: 12px;
-            animation: fadeIn 0.4s ease;
+            margin-bottom: 15px;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-weight: 600;
             font-size: 0.85em;
             color: #fff;
+            text-transform: capitalize;
         }
 
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #444;
-            border-radius: 6px;
+            padding: 10px 14px;
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
             font-family: inherit;
             font-size: 0.9em;
-            background: #2d3e50;
+            background: rgba(255, 255, 255, 0.05);
             color: #e0e0e0;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
         }
 
         .form-group input:focus,
         .form-group textarea:focus,
         .form-group select:focus {
-            border-color: #e94560;
+            border-color: #ff6b6b;
             outline: none;
-            background: #34495e;
-            box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.2);
-            transform: translateY(-2px);
+            background: rgba(255, 107, 107, 0.08);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
         }
 
         .form-group textarea {
             resize: vertical;
-            min-height: 60px;
+            min-height: 70px;
         }
 
         .btn {
             width: 100%;
-            padding: 11px;
+            padding: 12px 16px;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.9em;
-            transition: all 0.3s ease;
+            font-size: 0.95em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             margin-bottom: 8px;
             position: relative;
             overflow: hidden;
+            font-family: inherit;
         }
 
         .btn::before {
@@ -278,9 +262,9 @@
             width: 0;
             height: 0;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
             transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+            transition: width 0.6s, height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn:active::before {
@@ -289,13 +273,14 @@
         }
 
         .btn-add {
-            background: linear-gradient(135deg, #e94560 0%, #c23030 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
         }
 
         .btn-add:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
         }
 
         .btn-group {
@@ -305,143 +290,113 @@
         }
 
         .btn-download {
-            background: #27ae60;
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(81, 207, 102, 0.2);
         }
 
         .btn-download:hover {
-            background: #229954;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+            box-shadow: 0 8px 25px rgba(81, 207, 102, 0.3);
         }
 
         .btn-reset {
-            background: #e74c3c;
+            background: linear-gradient(135deg, #ff7675 0%, #ff5c5c 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(255, 118, 117, 0.2);
         }
 
         .btn-reset:hover {
-            background: #c0392b;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 118, 117, 0.3);
         }
 
         .btn-test {
-            background: #f39c12;
+            background: linear-gradient(135deg, #ffa940 0%, #ff7a45 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(255, 169, 64, 0.2);
         }
 
         .btn-test:hover {
-            background: #d68910;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 169, 64, 0.3);
         }
 
         .btn-code {
-            background: #3498db;
+            background: linear-gradient(135deg, #4dabf7 0%, #339af0 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(77, 171, 247, 0.2);
+            grid-column: 1 / -1;
         }
 
         .btn-code:hover {
-            background: #2980b9;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }
-
-        .btn-clear {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .btn-clear:hover {
-            background: #7f8c8d;
-            transform: translateY(-2px);
-        }
-
-        .btn-export {
-            background: #9b59b6;
-            color: white;
-        }
-
-        .btn-export:hover {
-            background: #8e44ad;
-            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(77, 171, 247, 0.3);
         }
 
         .tabs {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             margin-bottom: 15px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.2);
             padding: 6px;
-            border-radius: 6px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
         }
 
         .tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 10px 12px;
             background: transparent;
-            color: #bbb;
+            color: rgba(255, 255, 255, 0.6);
             border: none;
             cursor: pointer;
             border-bottom: 3px solid transparent;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 0.9em;
+            border-radius: 8px;
         }
 
         .tab-btn.active {
             color: white;
-            border-bottom-color: #e94560;
-            background: rgba(233, 69, 96, 0.1);
+            border-bottom-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
         }
 
         .tab-content {
             display: none;
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .tab-content.active {
             display: block;
-            animation: fadeIn 0.3s ease;
         }
 
         .items-list {
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-            max-height: 180px;
+            border-radius: 10px;
+            max-height: 200px;
             overflow-y: auto;
-            margin-bottom: 12px;
-            border: 1px solid #444;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
         }
 
         .item {
-            padding: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            animation: slideIn 0.3s ease;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .item:hover {
-            background: rgba(233, 69, 96, 0.1);
-        }
-
-        .item:last-child {
-            border-bottom: none;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            background: rgba(255, 107, 107, 0.08);
+            transform: translateX(4px);
         }
 
         .item-info {
@@ -451,7 +406,7 @@
 
         .item-title {
             font-weight: 600;
-            font-size: 0.85em;
+            font-size: 0.9em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -459,122 +414,134 @@
         }
 
         .item-text {
-            font-size: 0.75em;
-            opacity: 0.7;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 0.8em;
+            opacity: 0.6;
+            margin-top: 3px;
         }
 
         .item-buttons {
             display: flex;
-            gap: 4px;
+            gap: 6px;
         }
 
         .btn-small {
-            padding: 5px 8px;
+            padding: 6px 10px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.7em;
+            font-size: 0.75em;
             font-weight: 600;
             color: white;
-            background: #e94560;
-            transition: all 0.2s ease;
+            background: rgba(255, 107, 107, 0.6);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
         }
 
         .btn-small:hover {
-            background: #c23030;
-            transform: scale(1.1);
+            background: rgba(255, 107, 107, 0.9);
+            transform: scale(1.05);
         }
 
         /* ===== MAIN ===== */
         .main {
-            background: #1a1a2e;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
             padding: 30px;
             overflow-y: auto;
-            border-right: 1px solid #333;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-header {
+            margin-bottom: 25px;
+            animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .page-label {
             display: inline-block;
-            background: linear-gradient(135deg, #e94560 0%, #c23030 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
             color: white;
             padding: 10px 18px;
             border-radius: 20px;
             font-size: 0.9em;
             font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             letter-spacing: 0.5px;
-            animation: slideDown 0.4s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
         }
 
         .notice {
-            background: rgba(41, 128, 185, 0.15);
-            border-left: 4px solid #2980b9;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(52, 180, 235, 0.1), rgba(52, 180, 235, 0.05));
+            border-left: 3px solid #34b4eb;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 25px;
             font-size: 0.9em;
             color: #87ceeb;
-            animation: slideDown 0.4s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(52, 180, 235, 0.2);
+            animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .color-picker-box {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 10px;
             margin: 12px 0;
-            animation: fadeIn 0.4s ease;
         }
 
         .color-option {
             width: 100%;
-            height: 40px;
-            border-radius: 6px;
+            aspect-ratio: 1;
+            border-radius: 12px;
             border: 2px solid transparent;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .color-option:hover {
-            transform: scale(1.1);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
         .color-option.active {
             border-color: white;
             transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
         }
 
         /* ===== PREVIEW ===== */
         .preview {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            padding: 25px;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            padding: 30px;
             display: flex;
             align-items: flex-start;
             justify-content: center;
             overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            margin: 20px;
         }
 
         .preview-phone {
-            background: #0f0f1e;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+            background: linear-gradient(to bottom, rgba(10, 10, 20, 0.9), rgba(15, 15, 30, 0.95));
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             width: 100%;
             max-width: 380px;
             overflow: hidden;
-            min-height: 600px;
-            border: 1px solid #333;
-            animation: slideUp 0.5s ease;
+            min-height: 650px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 12px;
         }
 
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -582,114 +549,115 @@
             }
         }
 
+        .preview-notch {
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 25px 25px;
+            margin: -12px -12px 0 -12px;
+            margin-bottom: 10px;
+        }
+
         .preview-content {
             padding: 20px;
-            min-height: 600px;
+            height: 600px;
+            overflow-y: auto;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
         }
 
         .website-header {
-            background: linear-gradient(135deg, #e94560 0%, #c23030 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
             color: white;
-            padding: 30px 20px;
+            padding: 35px 20px;
             text-align: center;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            animation: slideDown 0.5s ease;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.2);
         }
 
         .website-header h1 {
-            font-size: 1.8em;
+            font-size: 1.9em;
             margin-bottom: 8px;
             font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .website-header p {
             font-size: 0.95em;
             opacity: 0.95;
+            font-weight: 500;
         }
 
         .website-section {
-            margin-bottom: 18px;
-            padding: 15px;
-            background: #2d3e50;
-            border-radius: 8px;
-            border-right: 4px solid #e94560;
-            transition: all 0.3s ease;
-            animation: slideUp 0.4s ease;
+            margin-bottom: 20px;
+            padding: 18px;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.05));
+            border-radius: 12px;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .website-section:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.3);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.15);
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.15), rgba(255, 107, 107, 0.08));
         }
 
         .website-section h2 {
-            color: #e94560;
+            color: #ff6b6b;
             margin-bottom: 10px;
             font-size: 1.2em;
             font-weight: 600;
         }
 
         .website-section p {
-            color: #bbb;
-            line-height: 1.6;
-            font-size: 0.9em;
+            color: #c0c0c0;
+            line-height: 1.7;
+            font-size: 0.95em;
+            font-weight: 500;
         }
 
         .nav-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin: 15px 0;
+            gap: 10px;
+            margin: 18px 0;
         }
 
         .website-button {
-            padding: 10px;
-            background: linear-gradient(135deg, #e94560 0%, #c23030 100%);
+            padding: 12px 14px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
             font-size: 0.85em;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .website-button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .website-button:active::before {
-            width: 300px;
-            height: 300px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.25);
         }
 
         .website-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+            box-shadow: 0 6px 16px rgba(255, 107, 107, 0.3);
+        }
+
+        .website-button:active {
+            transform: scale(0.98);
         }
 
         .website-footer {
-            background: #0f0f1e;
-            color: #bbb;
+            background: rgba(0, 0, 0, 0.3);
+            color: #999;
             text-align: center;
-            padding: 15px;
+            padding: 16px;
             font-size: 0.8em;
-            margin-top: 15px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            animation: slideUp 0.5s ease;
+            margin-top: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .website-footer p {
@@ -697,8 +665,8 @@
         }
 
         .credit-text {
-            color: #e94560;
-            font-weight: 600;
+            color: #ff6b6b;
+            font-weight: 700;
         }
 
         /* ===== CODE VIEWER ===== */
@@ -708,11 +676,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #1a1a2e;
+            background: #0a0a14;
             z-index: 2000;
             display: none;
             flex-direction: column;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .code-viewer-page.show {
@@ -720,13 +688,13 @@
         }
 
         .code-viewer-header {
-            background: linear-gradient(135deg, #e94560 0%, #c23030 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
             color: white;
-            padding: 15px 25px;
+            padding: 18px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
         .code-viewer-buttons {
@@ -735,43 +703,43 @@
         }
 
         .code-btn {
-            padding: 10px 15px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 0.9em;
         }
 
         .code-btn-copy {
             background: white;
-            color: #e94560;
+            color: #ff6b6b;
         }
 
         .code-btn-copy:hover {
-            background: #f0f0f0;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .code-btn-download {
-            background: #27ae60;
+            background: #51cf66;
             color: white;
         }
 
         .code-btn-download:hover {
-            background: #229954;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(81, 207, 102, 0.3);
         }
 
         .code-btn-close {
-            background: #e74c3c;
+            background: #ff7675;
             color: white;
         }
 
         .code-btn-close:hover {
-            background: #c0392b;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 118, 117, 0.3);
         }
 
         .code-viewer-content {
@@ -782,98 +750,63 @@
         }
 
         .code-box {
-            background: #0f0f1e;
+            background: #1a1a2e;
             color: #66d9ef;
             padding: 20px;
             overflow: auto;
-            font-family: 'Courier New', monospace;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
             font-size: 0.8em;
-            border-right: 2px solid #e94560;
-            line-height: 1.4;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            line-height: 1.5;
         }
 
         .preview-box {
-            background: #1a1a2e;
+            background: #0f0f23;
             overflow: auto;
         }
 
         /* ===== NOTIFICATION ===== */
         .notification {
             position: fixed;
-            top: 20px;
+            bottom: 20px;
             right: 20px;
-            background: #2d3e50;
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            background: rgba(40, 40, 60, 0.95);
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             z-index: 3000;
-            animation: slideIn 0.3s ease;
-            border-left: 4px solid #e94560;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff;
+            font-weight: 500;
+            backdrop-filter: blur(20px);
         }
 
         .notification.success {
-            border-left-color: #27ae60;
-        }
-
-        /* ===== ANIMATIONS ===== */
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            border-left: 3px solid #51cf66;
         }
 
         /* ===== SCROLLBAR ===== */
-        .sidebar::-webkit-scrollbar,
-        .items-list::-webkit-scrollbar,
-        .code-box::-webkit-scrollbar,
-        .main::-webkit-scrollbar,
-        .preview::-webkit-scrollbar {
+        ::-webkit-scrollbar {
             width: 6px;
         }
 
-        .sidebar::-webkit-scrollbar-track,
-        .items-list::-webkit-scrollbar-track,
-        .code-box::-webkit-scrollbar-track,
-        .main::-webkit-scrollbar-track,
-        .preview::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
         }
 
-        .sidebar::-webkit-scrollbar-thumb,
-        .items-list::-webkit-scrollbar-thumb,
-        .code-box::-webkit-scrollbar-thumb,
-        .main::-webkit-scrollbar-thumb,
-        .preview::-webkit-scrollbar-thumb {
-            background: #e94560;
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 107, 107, 0.4);
             border-radius: 3px;
         }
 
-        .sidebar::-webkit-scrollbar-thumb:hover,
-        .items-list::-webkit-scrollbar-thumb:hover,
-        .code-box::-webkit-scrollbar-thumb:hover,
-        .main::-webkit-scrollbar-thumb:hover,
-        .preview::-webkit-scrollbar-thumb:hover {
-            background: #c23030;
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 107, 107, 0.7);
         }
 
         @media (max-width: 1400px) {
             .container {
-                grid-template-columns: 300px 1fr 380px;
+                grid-template-columns: 280px 1fr 360px;
             }
         }
 
@@ -892,7 +825,7 @@
 
             .code-box {
                 border-right: none;
-                border-bottom: 2px solid #e94560;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             }
         }
     </style>
@@ -902,14 +835,7 @@
     <div class="loader" id="loader">
         <div class="loader-content">
             <div class="loader-icon"></div>
-            <div class="loader-text">
-                Pro Site Builder
-                <span class="loader-dots">
-                    <span>.</span>
-                    <span>.</span>
-                    <span>.</span>
-                </span>
-            </div>
+            <div class="loader-text">Pro Site Builder</div>
         </div>
     </div>
 
@@ -919,7 +845,7 @@
             <div class="sidebar-header">
                 <h1>⚡ Pro Site</h1>
                 <p>طراح حرفه‌ای</p>
-                <p>by <span class="credit-text">Rob Lucci</span></p>
+                <p style="font-size: 0.7em; margin-top: 8px;">by <span class="credit-text">Rob Lucci</span></p>
             </div>
 
             <div class="sidebar-content">
@@ -936,7 +862,7 @@
                         <label>نام صفحه</label>
                         <input type="text" id="newPageName" placeholder="درباره ما">
                     </div>
-                    <button class="btn btn-add" onclick="addPage()">➕ اضافه کردن</button>
+                    <button class="btn btn-add" onclick="addPage()">➕ صفحه</button>
                     <div class="items-list" id="pagesList"></div>
 
                     <div class="section-title">تنظیمات</div>
@@ -949,7 +875,7 @@
                         <input type="text" id="pageDesc" value="سایتی حرفه‌ای و شیک">
                     </div>
 
-                    <div class="section-title">رنگ صفحه</div>
+                    <div class="section-title">رنگ</div>
                     <div class="color-picker-box" id="colorPicker"></div>
 
                     <div class="section-title">بخش‌ها</div>
@@ -961,7 +887,7 @@
                         <label>متن</label>
                         <textarea id="newSectionText" placeholder="متن بخش..."></textarea>
                     </div>
-                    <button class="btn btn-add" onclick="addSection()">➕ اضافه کردن</button>
+                    <button class="btn btn-add" onclick="addSection()">➕ بخش</button>
                     <div class="items-list" id="sectionsList"></div>
 
                     <div class="section-title">تماس</div>
@@ -1007,9 +933,9 @@
                             <input type="url" id="newButtonURL" placeholder="https://...">
                         </div>
                         <div class="form-group">
-                            <label>یا انتخاب صفحه</label>
+                            <label>یا صفحه</label>
                             <select id="newButtonLinkPage">
-                                <option value="">انتخاب صفحه...</option>
+                                <option value="">انتخاب...</option>
                             </select>
                         </div>
                     </div>
@@ -1021,17 +947,16 @@
                         </div>
                     </div>
 
-                    <button class="btn btn-add" onclick="addButton()">➕ اضافه کردن</button>
+                    <button class="btn btn-add" onclick="addButton()">➕ دکمه</button>
                     <div class="items-list" id="buttonsList"></div>
                 </div>
 
                 <!-- Tools Tab -->
                 <div id="tools" class="tab-content">
                     <div class="section-title">ابزارها</div>
-                    
-                    <button class="btn btn-export" onclick="exportData()">💾 صادر اطلاعات</button>
-                    <button class="btn btn-clear" onclick="clearCurrentPage()">🗑️ خالی کردن صفحه</button>
-                    <button class="btn btn-clear" onclick="duplicatePage()">📋 تکرار صفحه</button>
+                    <button class="btn" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white; box-shadow: 0 4px 15px rgba(155, 89, 182, 0.2);" onclick="exportData()">💾 صادر</button>
+                    <button class="btn" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);" onclick="clearCurrentPage()">🗑️ خالی</button>
+                    <button class="btn" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);" onclick="duplicatePage()">📋 تکرار</button>
                     
                     <div class="section-title">نمایش</div>
                     <button class="btn btn-test" onclick="testSite()">🧪 تست</button>
@@ -1051,18 +976,21 @@
 
         <!-- Main -->
         <div class="main">
-            <div style="text-align: center; margin-bottom: 20px; padding: 15px; background: rgba(233, 69, 96, 0.1); border-radius: 8px; border: 1px solid #e94560;">
-                <p style="font-size: 0.85em; color: #e94560;">🏗️ <span class="credit-text">Pro Site Builder by Rob Lucci</span></p>
-            </div>
-            <div class="page-label" id="pageLabel">صفحه: خانه</div>
-            <div class="notice">
-                ⚡ تغییرات لایو در سمت راست
+            <div class="main-header">
+                <div style="text-align: center; margin-bottom: 15px; padding: 15px; background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.05)); border-radius: 12px; border: 1px solid rgba(255, 107, 107, 0.2); backdrop-filter: blur(10px);">
+                    <p style="font-size: 0.85em; color: #ff6b6b;">🏗️ <span class="credit-text">Pro Site Builder by Rob Lucci</span></p>
+                </div>
+                <div class="page-label" id="pageLabel">صفحه: خانه</div>
+                <div class="notice">
+                    ⚡ تغییرات لایو در سمت راست
+                </div>
             </div>
         </div>
 
         <!-- Preview -->
         <div class="preview">
             <div class="preview-phone">
+                <div class="preview-notch"></div>
                 <div class="preview-content" id="previewContent"></div>
             </div>
         </div>
@@ -1080,12 +1008,8 @@
         </div>
 
         <div class="code-viewer-content">
-            <div class="code-box">
-                <code id="codeContent"></code>
-            </div>
-            <div class="preview-box">
-                <iframe id="livePreview" style="width: 100%; height: 100%; border: none; background: white;"></iframe>
-            </div>
+            <div class="code-box"><code id="codeContent"></code></div>
+            <div class="preview-box"><iframe id="livePreview" style="width: 100%; height: 100%; border: none; background: white;"></iframe></div>
         </div>
     </div>
 
@@ -1094,7 +1018,7 @@
             'home': {
                 title: 'سایت حرفه‌ای من',
                 desc: 'سایتی حرفه‌ای و شیک برای کسب و کار شما',
-                color: '#e94560',
+                color: '#ff6b6b',
                 sections: [],
                 isHome: true
             }
@@ -1102,13 +1026,12 @@
         let buttons = [];
         let currentPage = 'home';
 
-        const colors = ['#e94560', '#3498db', '#27ae60', '#f39c12', '#9b59b6', '#e74c3c', '#1abc9c', '#34495e'];
+        const colors = ['#ff6b6b', '#4dabf7', '#51cf66', '#ffa940', '#9b59b6', '#ff7675', '#1abc9c', '#34495e'];
 
         function hideLoader() {
-            const loader = document.getElementById('loader');
             setTimeout(() => {
-                loader.classList.add('hidden');
-            }, 1500);
+                document.getElementById('loader').classList.add('hidden');
+            }, 1200);
         }
 
         function loadData() {
@@ -1181,7 +1104,7 @@
             pages[id] = {
                 title: name,
                 desc: 'توضیح',
-                color: '#e94560',
+                color: '#ff6b6b',
                 sections: [],
                 isHome: false
             };
@@ -1267,7 +1190,7 @@
                             <div class="item-title">${page.title}</div>
                         </div>
                         <div class="item-buttons">
-                            <button class="btn-small" onclick="selectPage('${id}')" style="background: #3498db;">✓</button>
+                            <button class="btn-small" onclick="selectPage('${id}')" style="background: rgba(77, 171, 247, 0.7);">✓</button>
                             ${id !== 'home' ? `<button class="btn-small" onclick="deletePage('${id}')">✕</button>` : ''}
                         </div>
                     </div>
@@ -1323,8 +1246,8 @@
                             <div class="item-title">${s.title}</div>
                         </div>
                         <div class="item-buttons">
-                            ${i > 0 ? `<button class="btn-small" onclick="moveSection(${i},'up')" style="background: #3498db;">▲</button>` : ''}
-                            ${i < sec.length - 1 ? `<button class="btn-small" onclick="moveSection(${i},'down')" style="background: #3498db;">▼</button>` : ''}
+                            ${i > 0 ? `<button class="btn-small" onclick="moveSection(${i},'up')" style="background: rgba(77, 171, 247, 0.7);">▲</button>` : ''}
+                            ${i < sec.length - 1 ? `<button class="btn-small" onclick="moveSection(${i},'down')" style="background: rgba(77, 171, 247, 0.7);">▼</button>` : ''}
                             <button class="btn-small" onclick="deleteSection(${i})">✕</button>
                         </div>
                     </div>
@@ -1401,7 +1324,6 @@
                 let info = '';
                 if (b.type === 'page') info = `📄 ${pages[b.link]?.title || 'خطا'}`;
                 else if (b.type === 'link') {
-                    // چک کردن اگر لینک صفحه‌ای است
                     if (pages[b.link]) {
                         info = `📄 ${pages[b.link].title}`;
                     } else {
@@ -1426,6 +1348,7 @@
 
         function updatePreview() {
             const page = pages[currentPage];
+            const color = document.getElementById('pageColor')?.value || page.color;
 
             let html = `<div class="website-header">
                 <h1>${page.title}</h1>
@@ -1473,7 +1396,6 @@
                 selectPage(b.link);
                 showNotification(`📄 ${pages[b.link].title}`);
             } else if (b.type === 'link') {
-                // چک کردن اگر لینک صفحه‌ای است
                 if (pages[b.link]) {
                     selectPage(b.link);
                     showNotification(`📄 ${pages[b.link].title}`);
@@ -1494,13 +1416,12 @@
                     buttonsHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0;">';
                     buttons.forEach(b => {
                         if (b.type === 'page') {
-                            buttonsHTML += `<a href="#page-${b.link}" style="padding:12px;background:#e94560;color:white;text-decoration:none;border-radius:6px;text-align:center;font-weight:bold;">${b.text}</a>`;
+                            buttonsHTML += `<a href="#page-${b.link}" style="padding:12px;background:#ff6b6b;color:white;text-decoration:none;border-radius:10px;text-align:center;font-weight:600;">${b.text}</a>`;
                         } else if (b.type === 'link') {
-                            // چک کردن اگر لینک صفحه‌ای است
                             if (pages[b.link]) {
-                                buttonsHTML += `<a href="#page-${b.link}" style="padding:12px;background:#e94560;color:white;text-decoration:none;border-radius:6px;text-align:center;font-weight:bold;">${b.text}</a>`;
+                                buttonsHTML += `<a href="#page-${b.link}" style="padding:12px;background:#ff6b6b;color:white;text-decoration:none;border-radius:10px;text-align:center;font-weight:600;">${b.text}</a>`;
                             } else {
-                                buttonsHTML += `<a href="${b.link}" target="_blank" style="padding:12px;background:#e94560;color:white;text-decoration:none;border-radius:6px;text-align:center;font-weight:bold;">${b.text}</a>`;
+                                buttonsHTML += `<a href="${b.link}" target="_blank" style="padding:12px;background:#ff6b6b;color:white;text-decoration:none;border-radius:10px;text-align:center;font-weight:600;">${b.text}</a>`;
                             }
                         }
                     });
@@ -1509,16 +1430,16 @@
 
                 let sectionsHTML = '';
                 page.sections.forEach(s => {
-                    sectionsHTML += `<div style="margin:20px 0;padding:20px;background:#2d3e50;color:#e0e0e0;border-radius:10px;border-right:4px solid #e94560;transition:all 0.3s ease;">
-                        <h2 style="color:#e94560;margin-bottom:10px;">${s.title}</h2>
-                        <p style="line-height:1.8;">${s.text}</p>
+                    sectionsHTML += `<div style="margin:20px 0;padding:20px;background:rgba(255,107,107,0.1);border-radius:12px;border:1px solid rgba(255,107,107,0.2);">
+                        <h2 style="color:#ff6b6b;margin-bottom:10px;font-size:1.3em;">${s.title}</h2>
+                        <p style="color:#c0c0c0;line-height:1.8;">${s.text}</p>
                     </div>`;
                 });
 
                 pagesHTML += `<div id="page-${id}" style="padding:40px 20px;animation:fadeIn 0.5s ease;">
-                    <div style="background:linear-gradient(135deg,#e94560 0%,#c23030 100%);color:white;padding:60px 20px;text-align:center;margin-bottom:30px;border-radius:10px;animation:slideDown 0.5s ease;">
-                        <h1 style="font-size:2.5em;margin-bottom:10px;">${page.title}</h1>
-                        <p style="font-size:1.1em;opacity:0.95;">${page.desc}</p>
+                    <div style="background:linear-gradient(135deg,#ff6b6b 0%,#ee5a52 100%);color:white;padding:60px 20px;text-align:center;margin-bottom:30px;border-radius:15px;box-shadow:0 8px 20px rgba(255,107,107,0.2);">
+                        <h1 style="font-size:2.5em;margin-bottom:10px;font-weight:700;">${page.title}</h1>
+                        <p style="font-size:1.1em;opacity:0.95;font-weight:500;">${page.desc}</p>
                     </div>
                     ${buttonsHTML}
                     ${sectionsHTML}
@@ -1533,11 +1454,11 @@
     <title>سایت</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;}
-        body{font-family:Segoe UI;background:#1a1a2e;color:#e0e0e0;min-height:100vh;}
-        .container{max-width:1200px;margin:0 auto;background:#0f0f1e;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.7);min-height:100vh;}
-        .footer{background:#000;color:#999;text-align:center;padding:20px;margin-top:30px;border-top:1px solid #333;}
-        a{color:#e94560;text-decoration:none;}
-        a:hover{text-decoration:underline;}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(135deg,#0f0f23 0%,#1a1a3e 100%);min-height:100vh;color:#e0e0e0;}
+        .container{max-width:1200px;margin:0 auto;background:rgba(10,10,20,0.9);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.6);min-height:100vh;margin:20px;padding:20px;}
+        .footer{background:rgba(0,0,0,0.3);color:#999;text-align:center;padding:20px;margin-top:30px;border-top:1px solid rgba(255,255,255,0.1);border-radius:12px;}
+        a{color:#ff6b6b;text-decoration:none;font-weight:600;}
+        a:hover{opacity:0.8;}
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
         @keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
     </style>
@@ -1546,7 +1467,7 @@
     <div class="container">
         ${pagesHTML}
         <div class="footer">
-            <p><strong style="color:#e94560;">✨ ساخته شده توسط Rob Lucci</strong></p>
+            <p><strong style="color:#ff6b6b;">✨ ساخته شده توسط Rob Lucci</strong></p>
             <p>© 2026</p>
         </div>
     </div>
