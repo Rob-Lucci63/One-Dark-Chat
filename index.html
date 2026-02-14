@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Site Builder | طراح سایت حرفه‌ای</title>
+    <title>Pro Site Builder</title>
     <style>
         * {
             margin: 0;
@@ -11,18 +11,19 @@
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
-            color: #e0e0e0;
+        html, body {
+            width: 100%;
+            height: 100%;
             overflow: hidden;
         }
 
-        /* ===== LOADING ===== */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #e0e0e0;
+        }
+
+        /* ===== LOADER ===== */
         .loader {
             position: fixed;
             top: 0;
@@ -35,7 +36,7 @@
             justify-content: center;
             z-index: 9999;
             opacity: 1;
-            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.5s ease;
         }
 
         .loader.hidden {
@@ -43,15 +44,11 @@
             pointer-events: none;
         }
 
-        .loader-content {
-            text-align: center;
-        }
-
         .loader-icon {
             width: 80px;
             height: 80px;
-            margin: 0 auto 30px;
             position: relative;
+            margin-bottom: 20px;
         }
 
         .loader-icon::before {
@@ -61,7 +58,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border: 3px solid rgba(233, 69, 96, 0.2);
+            border: 3px solid rgba(255, 107, 107, 0.2);
             border-radius: 50%;
             animation: spin 2s linear infinite;
         }
@@ -86,138 +83,97 @@
         .loader-text {
             color: #ff6b6b;
             font-weight: 600;
-            font-size: 1.2em;
-            letter-spacing: 2px;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 1.1em;
         }
 
-        /* ===== MAIN CONTAINER ===== */
+        /* ===== CONTAINER ===== */
         .container {
             display: grid;
-            grid-template-columns: 320px 1fr 420px;
-            min-height: 100vh;
+            grid-template-columns: 300px 1fr 380px;
+            width: 100%;
+            height: 100%;
             gap: 0;
-            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         /* ===== SIDEBAR ===== */
         .sidebar {
             background: linear-gradient(to bottom, rgba(20, 20, 40, 0.95), rgba(15, 15, 35, 0.95));
-            backdrop-filter: blur(20px);
-            padding: 0;
-            overflow-y: auto;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            border-right: 1px solid rgba(255, 107, 107, 0.1);
             display: flex;
             flex-direction: column;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            border-right: 1px solid rgba(255, 107, 107, 0.1);
+            overflow: hidden;
         }
 
         .sidebar-header {
-            padding: 30px 20px;
+            padding: 25px 20px;
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
             text-align: center;
-            border-bottom: none;
-            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+            flex-shrink: 0;
         }
 
         .sidebar-header h1 {
-            font-size: 1.5em;
-            margin-bottom: 5px;
-            letter-spacing: 1px;
+            font-size: 1.4em;
+            margin-bottom: 3px;
             font-weight: 700;
-            animation: slideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .sidebar-header p {
-            font-size: 0.85em;
+            font-size: 0.8em;
             opacity: 0.95;
-            animation: slideDown 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .sidebar-content {
-            padding: 25px;
             flex: 1;
             overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255, 107, 107, 0.3) transparent;
+            overflow-x: hidden;
+            padding: 20px;
         }
 
         .sidebar-footer {
-            padding: 20px;
+            padding: 15px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             text-align: center;
-            font-size: 0.75em;
+            font-size: 0.7em;
             opacity: 0.7;
-            background: rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
         }
 
         .section-title {
-            font-size: 0.75em;
+            font-size: 0.7em;
             font-weight: 700;
-            margin: 20px 0 12px 0;
-            padding-bottom: 10px;
+            margin: 18px 0 10px 0;
+            padding-bottom: 8px;
             border-bottom: 1.5px solid #ff6b6b;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             color: #ff6b6b;
-            animation: slideRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes slideRight {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
         }
 
         .form-group {
-            margin-bottom: 15px;
-            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 12px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             font-weight: 600;
-            font-size: 0.85em;
+            font-size: 0.8em;
             color: #fff;
-            text-transform: capitalize;
         }
 
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 10px 14px;
-            border: 1.5px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            padding: 9px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             font-family: inherit;
-            font-size: 0.9em;
+            font-size: 0.85em;
             background: rgba(255, 255, 255, 0.05);
             color: #e0e0e0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
         .form-group input:focus,
@@ -226,136 +182,106 @@
             border-color: #ff6b6b;
             outline: none;
             background: rgba(255, 107, 107, 0.08);
-            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .form-group input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.1);
         }
 
         .form-group textarea {
             resize: vertical;
-            min-height: 70px;
+            min-height: 60px;
         }
 
         .btn {
             width: 100%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.95em;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.85em;
+            transition: all 0.3s ease;
             margin-bottom: 8px;
-            position: relative;
-            overflow: hidden;
             font-family: inherit;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .btn:active::before {
-            width: 300px;
-            height: 300px;
         }
 
         .btn-add {
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
         }
 
         .btn-add:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
         }
 
         .btn-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn-download {
             background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(81, 207, 102, 0.2);
         }
 
         .btn-download:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(81, 207, 102, 0.3);
+            box-shadow: 0 4px 12px rgba(81, 207, 102, 0.3);
         }
 
         .btn-reset {
             background: linear-gradient(135deg, #ff7675 0%, #ff5c5c 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(255, 118, 117, 0.2);
         }
 
         .btn-reset:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 118, 117, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 118, 117, 0.3);
         }
 
         .btn-test {
             background: linear-gradient(135deg, #ffa940 0%, #ff7a45 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(255, 169, 64, 0.2);
+            grid-column: 1 / -1;
         }
 
         .btn-test:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 169, 64, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 169, 64, 0.3);
         }
 
         .btn-code {
             background: linear-gradient(135deg, #4dabf7 0%, #339af0 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(77, 171, 247, 0.2);
             grid-column: 1 / -1;
         }
 
         .btn-code:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(77, 171, 247, 0.3);
+            box-shadow: 0 4px 12px rgba(77, 171, 247, 0.3);
         }
 
         .tabs {
             display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
+            gap: 6px;
+            margin-bottom: 12px;
             background: rgba(0, 0, 0, 0.2);
-            padding: 6px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
+            padding: 5px;
+            border-radius: 8px;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 10px 12px;
+            padding: 8px 10px;
             background: transparent;
             color: rgba(255, 255, 255, 0.6);
             border: none;
             cursor: pointer;
-            border-bottom: 3px solid transparent;
+            border-bottom: 2px solid transparent;
             font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.9em;
-            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+            border-radius: 6px;
         }
 
         .tab-btn.active {
@@ -366,7 +292,6 @@
 
         .tab-content {
             display: none;
-            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .tab-content.active {
@@ -374,29 +299,26 @@
         }
 
         .items-list {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            max-height: 200px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            max-height: 150px;
             overflow-y: auto;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
         }
 
         .item {
-            padding: 12px;
+            padding: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.02);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 8px;
+            transition: all 0.3s ease;
         }
 
         .item:hover {
             background: rgba(255, 107, 107, 0.08);
-            transform: translateX(4px);
         }
 
         .item-info {
@@ -406,7 +328,7 @@
 
         .item-title {
             font-weight: 600;
-            font-size: 0.9em;
+            font-size: 0.8em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -414,27 +336,27 @@
         }
 
         .item-text {
-            font-size: 0.8em;
+            font-size: 0.7em;
             opacity: 0.6;
-            margin-top: 3px;
+            margin-top: 2px;
         }
 
         .item-buttons {
             display: flex;
-            gap: 6px;
+            gap: 4px;
+            flex-shrink: 0;
         }
 
         .btn-small {
-            padding: 6px 10px;
+            padding: 5px 8px;
             border: none;
-            border-radius: 6px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 0.75em;
+            font-size: 0.7em;
             font-weight: 600;
             color: white;
             background: rgba(255, 107, 107, 0.6);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255, 107, 107, 0.3);
+            transition: all 0.3s ease;
         }
 
         .btn-small:hover {
@@ -445,223 +367,186 @@
         /* ===== MAIN ===== */
         .main {
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
-            padding: 30px;
+            padding: 25px;
             overflow-y: auto;
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
-        }
-
-        .main-header {
-            margin-bottom: 25px;
-            animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 15px;
         }
 
         .page-label {
             display: inline-block;
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
             color: white;
-            padding: 10px 18px;
-            border-radius: 20px;
-            font-size: 0.9em;
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-size: 0.85em;
             font-weight: 600;
-            margin-bottom: 15px;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            width: fit-content;
         }
 
         .notice {
             background: linear-gradient(135deg, rgba(52, 180, 235, 0.1), rgba(52, 180, 235, 0.05));
             border-left: 3px solid #34b4eb;
-            padding: 14px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            font-size: 0.9em;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85em;
             color: #87ceeb;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(52, 180, 235, 0.2);
-            animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .color-picker-box {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin: 12px 0;
+            gap: 8px;
+            margin: 10px 0;
         }
 
         .color-option {
             width: 100%;
             aspect-ratio: 1;
-            border-radius: 12px;
+            border-radius: 10px;
             border: 2px solid transparent;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
 
         .color-option:hover {
             transform: scale(1.08);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .color-option.active {
             border-color: white;
             transform: scale(1.1);
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
         }
 
         /* ===== PREVIEW ===== */
         .preview {
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
-            padding: 30px;
+            padding: 20px;
             display: flex;
             align-items: flex-start;
             justify-content: center;
             overflow-y: auto;
+            overflow-x: hidden;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            margin: 20px;
+            border-radius: 16px;
         }
 
         .preview-phone {
-            background: linear-gradient(to bottom, rgba(10, 10, 20, 0.9), rgba(15, 15, 30, 0.95));
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            background: rgba(10, 10, 20, 0.9);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
             width: 100%;
-            max-width: 380px;
+            max-width: 360px;
             overflow: hidden;
-            min-height: 650px;
+            min-height: 580px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 12px;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            padding: 10px;
+            flex-shrink: 0;
         }
 
         .preview-notch {
-            height: 30px;
+            height: 28px;
             background: #000;
-            border-radius: 0 0 25px 25px;
-            margin: -12px -12px 0 -12px;
-            margin-bottom: 10px;
+            border-radius: 0 0 20px 20px;
+            margin: -10px -10px 8px -10px;
         }
 
         .preview-content {
-            padding: 20px;
-            height: 600px;
+            padding: 18px;
+            height: 530px;
             overflow-y: auto;
-            border-radius: 25px;
+            overflow-x: hidden;
+            border-radius: 18px;
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
         }
 
         .website-header {
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
             color: white;
-            padding: 35px 20px;
+            padding: 30px 18px;
             text-align: center;
-            margin-bottom: 20px;
-            border-radius: 15px;
-            animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 16px;
+            border-radius: 12px;
             box-shadow: 0 8px 20px rgba(255, 107, 107, 0.2);
         }
 
         .website-header h1 {
-            font-size: 1.9em;
-            margin-bottom: 8px;
+            font-size: 1.7em;
+            margin-bottom: 6px;
             font-weight: 700;
-            letter-spacing: -0.5px;
         }
 
         .website-header p {
-            font-size: 0.95em;
+            font-size: 0.9em;
             opacity: 0.95;
-            font-weight: 500;
         }
 
         .website-section {
-            margin-bottom: 20px;
-            padding: 18px;
+            margin-bottom: 16px;
+            padding: 14px;
             background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.05));
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid rgba(255, 107, 107, 0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
         }
 
         .website-section:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.15);
-            background: linear-gradient(135deg, rgba(255, 107, 107, 0.15), rgba(255, 107, 107, 0.08));
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.15);
         }
 
         .website-section h2 {
             color: #ff6b6b;
-            margin-bottom: 10px;
-            font-size: 1.2em;
+            margin-bottom: 8px;
+            font-size: 1.1em;
             font-weight: 600;
         }
 
         .website-section p {
             color: #c0c0c0;
-            line-height: 1.7;
-            font-size: 0.95em;
-            font-weight: 500;
+            line-height: 1.6;
+            font-size: 0.9em;
         }
 
         .nav-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 18px 0;
+            gap: 8px;
+            margin: 14px 0;
         }
 
         .website-button {
-            padding: 12px 14px;
+            padding: 10px 12px;
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.85em;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.25);
+            font-size: 0.8em;
+            transition: all 0.3s ease;
         }
 
         .website-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 107, 107, 0.3);
-        }
-
-        .website-button:active {
-            transform: scale(0.98);
         }
 
         .website-footer {
             background: rgba(0, 0, 0, 0.3);
             color: #999;
             text-align: center;
-            padding: 16px;
-            font-size: 0.8em;
-            margin-top: 20px;
-            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.75em;
+            margin-top: 14px;
+            border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .website-footer p {
-            margin: 4px 0;
+            margin: 3px 0;
         }
 
         .credit-text {
@@ -680,7 +565,6 @@
             z-index: 2000;
             display: none;
             flex-direction: column;
-            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .code-viewer-page.show {
@@ -690,11 +574,12 @@
         .code-viewer-header {
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
             color: white;
-            padding: 18px 25px;
+            padding: 16px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
         }
 
         .code-viewer-buttons {
@@ -708,8 +593,8 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.9em;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
         }
 
         .code-btn-copy {
@@ -719,7 +604,6 @@
 
         .code-btn-copy:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .code-btn-download {
@@ -729,7 +613,6 @@
 
         .code-btn-download:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(81, 207, 102, 0.3);
         }
 
         .code-btn-close {
@@ -739,7 +622,6 @@
 
         .code-btn-close:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 118, 117, 0.3);
         }
 
         .code-viewer-content {
@@ -747,6 +629,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0;
+            overflow: hidden;
         }
 
         .code-box {
@@ -754,8 +637,8 @@
             color: #66d9ef;
             padding: 20px;
             overflow: auto;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
-            font-size: 0.8em;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.75em;
             border-right: 1px solid rgba(255, 255, 255, 0.05);
             line-height: 1.5;
         }
@@ -771,19 +654,26 @@
             bottom: 20px;
             right: 20px;
             background: rgba(40, 40, 60, 0.95);
-            padding: 16px 24px;
-            border-radius: 12px;
+            padding: 14px 22px;
+            border-radius: 10px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             z-index: 3000;
-            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideUp 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff;
             font-weight: 500;
-            backdrop-filter: blur(20px);
+            font-size: 0.85em;
         }
 
-        .notification.success {
-            border-left: 3px solid #51cf66;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ===== SCROLLBAR ===== */
@@ -802,12 +692,6 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 107, 107, 0.7);
-        }
-
-        @media (max-width: 1400px) {
-            .container {
-                grid-template-columns: 280px 1fr 360px;
-            }
         }
 
         @media (max-width: 1024px) {
@@ -831,31 +715,28 @@
     </style>
 </head>
 <body>
-    <!-- Loading -->
     <div class="loader" id="loader">
-        <div class="loader-content">
+        <div>
             <div class="loader-icon"></div>
             <div class="loader-text">Pro Site Builder</div>
         </div>
     </div>
 
     <div class="container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <h1>⚡ Pro Site</h1>
                 <p>طراح حرفه‌ای</p>
-                <p style="font-size: 0.7em; margin-top: 8px;">by <span class="credit-text">Rob Lucci</span></p>
+                <p style="font-size: 0.65em; margin-top: 6px;">by <span class="credit-text">Rob Lucci</span></p>
             </div>
 
             <div class="sidebar-content">
                 <div class="tabs">
-                    <button class="tab-btn active" onclick="switchTab('pages')">📄</button>
-                    <button class="tab-btn" onclick="switchTab('buttons')">🔘</button>
-                    <button class="tab-btn" onclick="switchTab('tools')">🎨</button>
+                    <button class="tab-btn active" onclick="switchTab(event, 'pages')">📄</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'buttons')">🔘</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'tools')">🎨</button>
                 </div>
 
-                <!-- Pages Tab -->
                 <div id="pages" class="tab-content active">
                     <div class="section-title">صفحات</div>
                     <div class="form-group">
@@ -885,7 +766,7 @@
                     </div>
                     <div class="form-group">
                         <label>متن</label>
-                        <textarea id="newSectionText" placeholder="متن بخش..."></textarea>
+                        <textarea id="newSectionText" placeholder="متن..."></textarea>
                     </div>
                     <button class="btn btn-add" onclick="addSection()">➕ بخش</button>
                     <div class="items-list" id="sectionsList"></div>
@@ -901,7 +782,6 @@
                     </div>
                 </div>
 
-                <!-- Buttons Tab -->
                 <div id="buttons" class="tab-content">
                     <div class="section-title">دکمه جدید</div>
                     <div class="form-group">
@@ -921,9 +801,7 @@
                     <div id="buttonPageField">
                         <div class="form-group">
                             <label>صفحه</label>
-                            <select id="newButtonLink">
-                                <option value="">انتخاب...</option>
-                            </select>
+                            <select id="newButtonLink"></select>
                         </div>
                     </div>
 
@@ -934,9 +812,7 @@
                         </div>
                         <div class="form-group">
                             <label>یا صفحه</label>
-                            <select id="newButtonLinkPage">
-                                <option value="">انتخاب...</option>
-                            </select>
+                            <select id="newButtonLinkPage"></select>
                         </div>
                     </div>
 
@@ -951,12 +827,11 @@
                     <div class="items-list" id="buttonsList"></div>
                 </div>
 
-                <!-- Tools Tab -->
                 <div id="tools" class="tab-content">
                     <div class="section-title">ابزارها</div>
-                    <button class="btn" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white; box-shadow: 0 4px 15px rgba(155, 89, 182, 0.2);" onclick="exportData()">💾 صادر</button>
-                    <button class="btn" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);" onclick="clearCurrentPage()">🗑️ خالی</button>
-                    <button class="btn" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);" onclick="duplicatePage()">📋 تکرار</button>
+                    <button class="btn" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white;" onclick="exportData()">💾 صادر</button>
+                    <button class="btn" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white;" onclick="clearCurrentPage()">🗑️ خالی</button>
+                    <button class="btn" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white;" onclick="duplicatePage()">📋 تکرار</button>
                     
                     <div class="section-title">نمایش</div>
                     <button class="btn btn-test" onclick="testSite()">🧪 تست</button>
@@ -970,24 +845,14 @@
 
             <div class="sidebar-footer">
                 <p>✨ <span class="credit-text">Rob Lucci</span> © 2026</p>
-                <p>Pro Site Builder</p>
             </div>
         </div>
 
-        <!-- Main -->
         <div class="main">
-            <div class="main-header">
-                <div style="text-align: center; margin-bottom: 15px; padding: 15px; background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.05)); border-radius: 12px; border: 1px solid rgba(255, 107, 107, 0.2); backdrop-filter: blur(10px);">
-                    <p style="font-size: 0.85em; color: #ff6b6b;">🏗️ <span class="credit-text">Pro Site Builder by Rob Lucci</span></p>
-                </div>
-                <div class="page-label" id="pageLabel">صفحه: خانه</div>
-                <div class="notice">
-                    ⚡ تغییرات لایو در سمت راست
-                </div>
-            </div>
+            <div class="page-label" id="pageLabel">صفحه: خانه</div>
+            <div class="notice">⚡ تغییرات لایو در سمت راست</div>
         </div>
 
-        <!-- Preview -->
         <div class="preview">
             <div class="preview-phone">
                 <div class="preview-notch"></div>
@@ -996,7 +861,6 @@
         </div>
     </div>
 
-    <!-- Code Viewer -->
     <div id="codeViewerPage" class="code-viewer-page">
         <div class="code-viewer-header">
             <h2>💻 کد HTML</h2>
@@ -1025,52 +889,63 @@
         };
         let buttons = [];
         let currentPage = 'home';
-
         const colors = ['#ff6b6b', '#4dabf7', '#51cf66', '#ffa940', '#9b59b6', '#ff7675', '#1abc9c', '#34495e'];
 
         function hideLoader() {
             setTimeout(() => {
                 document.getElementById('loader').classList.add('hidden');
-            }, 1200);
+            }, 1000);
         }
 
         function loadData() {
-            const saved = localStorage.getItem('siteData');
-            if (saved) {
-                const data = JSON.parse(saved);
-                pages = data.pages || pages;
-                buttons = data.buttons || [];
-                currentPage = data.currentPage || 'home';
+            try {
+                const saved = localStorage.getItem('siteData');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    pages = data.pages || pages;
+                    buttons = data.buttons || [];
+                    currentPage = data.currentPage || 'home';
+                }
+            } catch (e) {
+                console.error('خطا در بارگذاری:', e);
             }
         }
 
         function saveData() {
-            localStorage.setItem('siteData', JSON.stringify({
-                pages,
-                buttons,
-                currentPage,
-                phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value
-            }));
+            try {
+                localStorage.setItem('siteData', JSON.stringify({
+                    pages,
+                    buttons,
+                    currentPage,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value
+                }));
+            } catch (e) {
+                console.error('خطا در ذخیره:', e);
+            }
         }
 
         function showNotification(text) {
             const notif = document.createElement('div');
-            notif.className = 'notification success';
+            notif.className = 'notification';
             notif.textContent = text;
             document.body.appendChild(notif);
-            setTimeout(() => notif.remove(), 2000);
+            setTimeout(() => {
+                notif.remove();
+            }, 1500);
         }
 
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
+        function switchTab(e, tab) {
+            if (e && e.preventDefault) e.preventDefault();
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tab).classList.add('active');
-            event.target.classList.add('active');
+            e.target.classList.add('active');
         }
 
         function initColorPicker() {
             const picker = document.getElementById('colorPicker');
+            if (!picker) return;
             picker.innerHTML = '';
             colors.forEach(color => {
                 const option = document.createElement('div');
@@ -1096,10 +971,16 @@
         }
 
         function addPage() {
-            const name = document.getElementById('newPageName').value;
-            if (!name) return;
+            const name = document.getElementById('newPageName').value.trim();
+            if (!name) {
+                showNotification('⚠️ نام صفحه را وارد کنید');
+                return;
+            }
             const id = name.replace(/\s+/g, '_').toLowerCase();
-            if (pages[id]) return;
+            if (pages[id]) {
+                showNotification('⚠️ این صفحه موجود است');
+                return;
+            }
 
             pages[id] = {
                 title: name,
@@ -1130,8 +1011,11 @@
         }
 
         function deletePage(id) {
-            if (id === 'home') return;
-            if (confirm('حذف کنم؟')) {
+            if (id === 'home') {
+                showNotification('⚠️ نمی‌توان صفحه خانه را حذف کرد');
+                return;
+            }
+            if (confirm('این صفحه را حذف کنم؟')) {
                 delete pages[id];
                 currentPage = 'home';
                 selectPage('home');
@@ -1147,7 +1031,10 @@
             const page = pages[currentPage];
             const name = page.title + ' (کپی)';
             const id = name.replace(/\s+/g, '_').toLowerCase();
-            if (pages[id]) return;
+            if (pages[id]) {
+                showNotification('⚠️ نام تکراری است');
+                return;
+            }
 
             pages[id] = JSON.parse(JSON.stringify(page));
             pages[id].title = name;
@@ -1181,6 +1068,7 @@
 
         function updatePagesList() {
             const list = document.getElementById('pagesList');
+            if (!list) return;
             let html = '';
             Object.keys(pages).forEach(id => {
                 const page = pages[id];
@@ -1200,9 +1088,12 @@
         }
 
         function addSection() {
-            const title = document.getElementById('newSectionTitle').value;
-            const text = document.getElementById('newSectionText').value;
-            if (!title || !text) return;
+            const title = document.getElementById('newSectionTitle').value.trim();
+            const text = document.getElementById('newSectionText').value.trim();
+            if (!title || !text) {
+                showNotification('⚠️ عنوان و متن را پر کنید');
+                return;
+            }
 
             pages[currentPage].sections.push({ title, text });
             document.getElementById('newSectionTitle').value = '';
@@ -1215,8 +1106,11 @@
 
         function moveSection(idx, dir) {
             const sec = pages[currentPage].sections;
-            if (dir === 'up' && idx > 0) [sec[idx], sec[idx-1]] = [sec[idx-1], sec[idx]];
-            else if (dir === 'down' && idx < sec.length - 1) [sec[idx], sec[idx+1]] = [sec[idx+1], sec[idx]];
+            if (dir === 'up' && idx > 0) {
+                [sec[idx], sec[idx-1]] = [sec[idx-1], sec[idx]];
+            } else if (dir === 'down' && idx < sec.length - 1) {
+                [sec[idx], sec[idx+1]] = [sec[idx+1], sec[idx]];
+            }
             updateSectionsList();
             updatePreview();
             saveData();
@@ -1232,6 +1126,7 @@
 
         function updateSectionsList() {
             const list = document.getElementById('sectionsList');
+            if (!list) return;
             const sec = pages[currentPage].sections;
             if (!sec.length) {
                 list.innerHTML = '';
@@ -1257,27 +1152,37 @@
         }
 
         function addButton() {
-            const text = document.getElementById('newButtonText').value;
+            const text = document.getElementById('newButtonText').value.trim();
             const type = document.getElementById('newButtonType').value;
-            if (!text) return;
+            if (!text) {
+                showNotification('⚠️ متن دکمه را وارد کنید');
+                return;
+            }
 
             let link = '';
             if (type === 'page') {
                 link = document.getElementById('newButtonLink').value;
-                if (!link) return;
+                if (!link) {
+                    showNotification('⚠️ صفحه را انتخاب کنید');
+                    return;
+                }
             } else if (type === 'link') {
-                const url = document.getElementById('newButtonURL').value;
+                const url = document.getElementById('newButtonURL').value.trim();
                 const linkPage = document.getElementById('newButtonLinkPage').value;
                 if (url) {
                     link = url;
                 } else if (linkPage) {
                     link = linkPage;
                 } else {
+                    showNotification('⚠️ لینک یا صفحه را وارد کنید');
                     return;
                 }
             } else if (type === 'notification') {
-                link = document.getElementById('newButtonMessage').value;
-                if (!link) return;
+                link = document.getElementById('newButtonMessage').value.trim();
+                if (!link) {
+                    showNotification('⚠️ متن پیام را وارد کنید');
+                    return;
+                }
             }
 
             buttons.push({ text, type, link });
@@ -1303,6 +1208,8 @@
             const sel = document.getElementById('newButtonLink');
             const linkPageSel = document.getElementById('newButtonLinkPage');
             
+            if (!sel || !linkPageSel) return;
+            
             sel.innerHTML = '<option value="">انتخاب...</option>';
             linkPageSel.innerHTML = '<option value="">انتخاب صفحه...</option>';
             
@@ -1314,6 +1221,7 @@
 
         function updateButtonsList() {
             const list = document.getElementById('buttonsList');
+            if (!list) return;
             if (!buttons.length) {
                 list.innerHTML = '';
                 return;
@@ -1324,11 +1232,7 @@
                 let info = '';
                 if (b.type === 'page') info = `📄 ${pages[b.link]?.title || 'خطا'}`;
                 else if (b.type === 'link') {
-                    if (pages[b.link]) {
-                        info = `📄 ${pages[b.link].title}`;
-                    } else {
-                        info = `🔗 لینک خارجی`;
-                    }
+                    info = pages[b.link] ? `📄 ${pages[b.link].title}` : `🔗 لینک`;
                 } else info = `💬 پیام`;
 
                 html += `
@@ -1348,7 +1252,8 @@
 
         function updatePreview() {
             const page = pages[currentPage];
-            const color = document.getElementById('pageColor')?.value || page.color;
+            const content = document.getElementById('previewContent');
+            if (!content) return;
 
             let html = `<div class="website-header">
                 <h1>${page.title}</h1>
@@ -1387,7 +1292,7 @@
                 <p>© 2026</p>
             </div>`;
 
-            document.getElementById('previewContent').innerHTML = html;
+            content.innerHTML = html;
         }
 
         function simulateButton(idx) {
@@ -1431,15 +1336,15 @@
                 let sectionsHTML = '';
                 page.sections.forEach(s => {
                     sectionsHTML += `<div style="margin:20px 0;padding:20px;background:rgba(255,107,107,0.1);border-radius:12px;border:1px solid rgba(255,107,107,0.2);">
-                        <h2 style="color:#ff6b6b;margin-bottom:10px;font-size:1.3em;">${s.title}</h2>
+                        <h2 style="color:#ff6b6b;margin-bottom:10px;">${s.title}</h2>
                         <p style="color:#c0c0c0;line-height:1.8;">${s.text}</p>
                     </div>`;
                 });
 
-                pagesHTML += `<div id="page-${id}" style="padding:40px 20px;animation:fadeIn 0.5s ease;">
-                    <div style="background:linear-gradient(135deg,#ff6b6b 0%,#ee5a52 100%);color:white;padding:60px 20px;text-align:center;margin-bottom:30px;border-radius:15px;box-shadow:0 8px 20px rgba(255,107,107,0.2);">
+                pagesHTML += `<div id="page-${id}" style="padding:40px 20px;">
+                    <div style="background:linear-gradient(135deg,#ff6b6b 0%,#ee5a52 100%);color:white;padding:60px 20px;text-align:center;margin-bottom:30px;border-radius:15px;">
                         <h1 style="font-size:2.5em;margin-bottom:10px;font-weight:700;">${page.title}</h1>
-                        <p style="font-size:1.1em;opacity:0.95;font-weight:500;">${page.desc}</p>
+                        <p style="font-size:1.1em;opacity:0.95;">${page.desc}</p>
                     </div>
                     ${buttonsHTML}
                     ${sectionsHTML}
@@ -1454,13 +1359,11 @@
     <title>سایت</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;}
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(135deg,#0f0f23 0%,#1a1a3e 100%);min-height:100vh;color:#e0e0e0;}
-        .container{max-width:1200px;margin:0 auto;background:rgba(10,10,20,0.9);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.6);min-height:100vh;margin:20px;padding:20px;}
-        .footer{background:rgba(0,0,0,0.3);color:#999;text-align:center;padding:20px;margin-top:30px;border-top:1px solid rgba(255,255,255,0.1);border-radius:12px;}
+        body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:linear-gradient(135deg,#0f0f23 0%,#1a1a3e 100%);min-height:100vh;color:#e0e0e0;}
+        .container{max-width:1200px;margin:0 auto;background:rgba(10,10,20,0.9);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.6);min-height:100vh;padding:40px 20px;margin:20px;}
+        .footer{background:rgba(0,0,0,0.3);color:#999;text-align:center;padding:20px;margin-top:40px;border-top:1px solid rgba(255,255,255,0.1);}
         a{color:#ff6b6b;text-decoration:none;font-weight:600;}
         a:hover{opacity:0.8;}
-        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-        @keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
     </style>
 </head>
 <body>
@@ -1488,12 +1391,15 @@
             const code = generateHTML();
             const blob = new Blob([code], {type: 'text/html'});
             window.open(URL.createObjectURL(blob), '_blank');
+            showNotification('✅ صفحه جدید باز شد');
         }
 
         function showCodeViewer() {
             const code = generateHTML();
-            document.getElementById('codeContent').textContent = code;
-            document.getElementById('livePreview').srcdoc = code;
+            const codeContent = document.getElementById('codeContent');
+            if (codeContent) codeContent.textContent = code;
+            const livePreview = document.getElementById('livePreview');
+            if (livePreview) livePreview.srcdoc = code;
             document.getElementById('codeViewerPage').classList.add('show');
         }
 
@@ -1503,8 +1409,11 @@
 
         function copyAllCode() {
             const code = document.getElementById('codeContent').textContent;
-            navigator.clipboard.writeText(code);
-            showNotification('✅ کپی شد');
+            navigator.clipboard.writeText(code).then(() => {
+                showNotification('✅ کپی شد');
+            }).catch(() => {
+                showNotification('⚠️ خطا در کپی');
+            });
         }
 
         function downloadCode() {
@@ -1517,39 +1426,53 @@
         }
 
         function resetAll() {
-            if (confirm('همه چیز حذف شود؟')) {
+            if (confirm('تمام اطلاعات حذف شود؟')) {
                 localStorage.removeItem('siteData');
                 location.reload();
             }
         }
 
-        document.getElementById('pageTitle').addEventListener('input', e => {
-            pages[currentPage].title = e.target.value;
-            updatePagesList();
-            updatePreview();
-            saveData();
-        });
+        // Event Listeners
+        const pageTitle = document.getElementById('pageTitle');
+        if (pageTitle) {
+            pageTitle.addEventListener('input', (e) => {
+                pages[currentPage].title = e.target.value;
+                updatePagesList();
+                updatePreview();
+                saveData();
+            });
+        }
 
-        document.getElementById('pageDesc').addEventListener('input', e => {
-            pages[currentPage].desc = e.target.value;
-            updatePreview();
-            saveData();
-        });
+        const pageDesc = document.getElementById('pageDesc');
+        if (pageDesc) {
+            pageDesc.addEventListener('input', (e) => {
+                pages[currentPage].desc = e.target.value;
+                updatePreview();
+                saveData();
+            });
+        }
 
-        document.getElementById('phone').addEventListener('input', () => {
-            updatePreview();
-            saveData();
-        });
+        const phone = document.getElementById('phone');
+        if (phone) {
+            phone.addEventListener('input', () => {
+                updatePreview();
+                saveData();
+            });
+        }
 
-        document.getElementById('email').addEventListener('input', () => {
-            updatePreview();
-            saveData();
-        });
+        const email = document.getElementById('email');
+        if (email) {
+            email.addEventListener('input', () => {
+                updatePreview();
+                saveData();
+            });
+        }
 
         window.onclick = function(e) {
             if (e.target.id === 'codeViewerPage') closeCodeViewer();
         };
 
+        // Initialize
         loadData();
         selectPage(currentPage);
         updatePagesList();
