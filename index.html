@@ -21,11 +21,112 @@
             color: #e0e0e0;
         }
 
+        /* ===== LOADING ===== */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .loader-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 4px solid #e94560;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-icon::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #3498db;
+            border-radius: 50%;
+            border-right-color: transparent;
+            animation: spin 2s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            color: #e94560;
+            font-weight: 600;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+        }
+
+        .loader-dots {
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        .loader-dots span {
+            animation: blink 1.4s infinite;
+        }
+
+        .loader-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loader-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes blink {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+
         .container {
             display: grid;
             grid-template-columns: 320px 1fr 420px;
             min-height: 100vh;
             gap: 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         /* ===== SIDEBAR ===== */
@@ -35,6 +136,8 @@
             overflow-y: auto;
             box-shadow: 8px 0 25px rgba(0, 0, 0, 0.5);
             border-right: 1px solid #e94560;
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar-header {
@@ -48,11 +151,36 @@
             font-size: 1.4em;
             margin-bottom: 5px;
             letter-spacing: 1px;
+            animation: slideDown 0.6s ease;
         }
 
         .sidebar-header p {
             font-size: 0.85em;
             opacity: 0.95;
+            animation: slideDown 0.8s ease;
+        }
+
+        .sidebar-header p:last-child {
+            font-size: 0.7em;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sidebar-content {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
         }
 
         .sidebar-footer {
@@ -61,11 +189,6 @@
             text-align: center;
             font-size: 0.75em;
             opacity: 0.8;
-            margin-top: auto;
-        }
-
-        .sidebar-content {
-            padding: 20px;
         }
 
         .section-title {
@@ -77,10 +200,23 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             color: #e94560;
+            animation: slideRight 0.5s ease;
+        }
+
+        @keyframes slideRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .form-group {
             margin-bottom: 12px;
+            animation: fadeIn 0.4s ease;
         }
 
         .form-group label {
@@ -96,7 +232,7 @@
         .form-group select {
             width: 100%;
             padding: 10px;
-            border: 1px solid #444;
+            border: 2px solid #444;
             border-radius: 6px;
             font-family: inherit;
             font-size: 0.9em;
@@ -112,6 +248,7 @@
             outline: none;
             background: #34495e;
             box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.2);
+            transform: translateY(-2px);
         }
 
         .form-group textarea {
@@ -129,6 +266,26 @@
             font-size: 0.9em;
             transition: all 0.3s ease;
             margin-bottom: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:active::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-add {
@@ -154,6 +311,8 @@
 
         .btn-download:hover {
             background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
         }
 
         .btn-reset {
@@ -163,6 +322,8 @@
 
         .btn-reset:hover {
             background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
         }
 
         .btn-test {
@@ -172,6 +333,8 @@
 
         .btn-test:hover {
             background: #d68910;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
         }
 
         .btn-code {
@@ -181,6 +344,28 @@
 
         .btn-code:hover {
             background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-clear {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .btn-export {
+            background: #9b59b6;
+            color: white;
+        }
+
+        .btn-export:hover {
+            background: #8e44ad;
+            transform: translateY(-2px);
         }
 
         .tabs {
@@ -217,6 +402,7 @@
 
         .tab-content.active {
             display: block;
+            animation: fadeIn 0.3s ease;
         }
 
         .items-list {
@@ -235,10 +421,27 @@
             justify-content: space-between;
             align-items: center;
             gap: 8px;
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease;
+        }
+
+        .item:hover {
+            background: rgba(233, 69, 96, 0.1);
         }
 
         .item:last-child {
             border-bottom: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .item-info {
@@ -282,7 +485,7 @@
 
         .btn-small:hover {
             background: #c23030;
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
 
         /* ===== MAIN ===== */
@@ -303,6 +506,7 @@
             font-weight: 600;
             margin-bottom: 20px;
             letter-spacing: 0.5px;
+            animation: slideDown 0.4s ease;
         }
 
         .notice {
@@ -313,6 +517,36 @@
             margin-bottom: 20px;
             font-size: 0.9em;
             color: #87ceeb;
+            animation: slideDown 0.4s ease;
+        }
+
+        .color-picker-box {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 12px 0;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .color-option {
+            width: 100%;
+            height: 40px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .color-option.active {
+            border-color: white;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
         }
 
         /* ===== PREVIEW ===== */
@@ -334,6 +568,18 @@
             overflow: hidden;
             min-height: 600px;
             border: 1px solid #333;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .preview-content {
@@ -348,6 +594,7 @@
             text-align: center;
             margin-bottom: 15px;
             border-radius: 10px;
+            animation: slideDown 0.5s ease;
         }
 
         .website-header h1 {
@@ -367,6 +614,13 @@
             background: #2d3e50;
             border-radius: 8px;
             border-right: 4px solid #e94560;
+            transition: all 0.3s ease;
+            animation: slideUp 0.4s ease;
+        }
+
+        .website-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.3);
         }
 
         .website-section h2 {
@@ -399,6 +653,26 @@
             font-weight: 600;
             font-size: 0.85em;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .website-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .website-button:active::before {
+            width: 300px;
+            height: 300px;
         }
 
         .website-button:hover {
@@ -415,6 +689,7 @@
             margin-top: 15px;
             border-radius: 8px;
             border: 1px solid #333;
+            animation: slideUp 0.5s ease;
         }
 
         .website-footer p {
@@ -437,6 +712,7 @@
             z-index: 2000;
             display: none;
             flex-direction: column;
+            animation: fadeIn 0.3s ease;
         }
 
         .code-viewer-page.show {
@@ -475,6 +751,7 @@
 
         .code-btn-copy:hover {
             background: #f0f0f0;
+            transform: translateY(-2px);
         }
 
         .code-btn-download {
@@ -484,6 +761,7 @@
 
         .code-btn-download:hover {
             background: #229954;
+            transform: translateY(-2px);
         }
 
         .code-btn-close {
@@ -493,6 +771,7 @@
 
         .code-btn-close:hover {
             background: #c0392b;
+            transform: translateY(-2px);
         }
 
         .code-viewer-content {
@@ -533,6 +812,11 @@
             color: #fff;
         }
 
+        .notification.success {
+            border-left-color: #27ae60;
+        }
+
+        /* ===== ANIMATIONS ===== */
         @keyframes slideIn {
             from {
                 transform: translateX(400px);
@@ -542,6 +826,49 @@
                 transform: translateX(0);
                 opacity: 1;
             }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        .sidebar::-webkit-scrollbar,
+        .items-list::-webkit-scrollbar,
+        .code-box::-webkit-scrollbar,
+        .main::-webkit-scrollbar,
+        .preview::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track,
+        .items-list::-webkit-scrollbar-track,
+        .code-box::-webkit-scrollbar-track,
+        .main::-webkit-scrollbar-track,
+        .preview::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb,
+        .items-list::-webkit-scrollbar-thumb,
+        .code-box::-webkit-scrollbar-thumb,
+        .main::-webkit-scrollbar-thumb,
+        .preview::-webkit-scrollbar-thumb {
+            background: #e94560;
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover,
+        .items-list::-webkit-scrollbar-thumb:hover,
+        .code-box::-webkit-scrollbar-thumb:hover,
+        .main::-webkit-scrollbar-thumb:hover,
+        .preview::-webkit-scrollbar-thumb:hover {
+            background: #c23030;
         }
 
         @media (max-width: 1400px) {
@@ -568,47 +895,38 @@
                 border-bottom: 2px solid #e94560;
             }
         }
-
-        .sidebar::-webkit-scrollbar,
-        .items-list::-webkit-scrollbar,
-        .code-box::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .sidebar::-webkit-scrollbar-track,
-        .items-list::-webkit-scrollbar-track,
-        .code-box::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .sidebar::-webkit-scrollbar-thumb,
-        .items-list::-webkit-scrollbar-thumb,
-        .code-box::-webkit-scrollbar-thumb {
-            background: #e94560;
-            border-radius: 3px;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb:hover,
-        .items-list::-webkit-scrollbar-thumb:hover,
-        .code-box::-webkit-scrollbar-thumb:hover {
-            background: #c23030;
-        }
     </style>
 </head>
 <body>
+    <!-- Loading -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-icon"></div>
+            <div class="loader-text">
+                Pro Site Builder
+                <span class="loader-dots">
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <h1>⚡ Pro Site</h1>
                 <p>طراح حرفه‌ای</p>
-                <p style="font-size: 0.7em; margin-top: 8px; opacity: 0.9;">by <span class="credit-text">Rob Lucci</span></p>
+                <p>by <span class="credit-text">Rob Lucci</span></p>
             </div>
 
             <div class="sidebar-content">
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('pages')">📄</button>
                     <button class="tab-btn" onclick="switchTab('buttons')">🔘</button>
+                    <button class="tab-btn" onclick="switchTab('tools')">🎨</button>
                 </div>
 
                 <!-- Pages Tab -->
@@ -621,7 +939,7 @@
                     <button class="btn btn-add" onclick="addPage()">➕ اضافه کردن</button>
                     <div class="items-list" id="pagesList"></div>
 
-                    <div class="section-title">تنظیمات صفحه</div>
+                    <div class="section-title">تنظیمات</div>
                     <div class="form-group">
                         <label>عنوان</label>
                         <input type="text" id="pageTitle" value="سایت حرفه‌ای من">
@@ -630,6 +948,9 @@
                         <label>توضیح</label>
                         <input type="text" id="pageDesc" value="سایتی حرفه‌ای و شیک">
                     </div>
+
+                    <div class="section-title">رنگ صفحه</div>
+                    <div class="color-picker-box" id="colorPicker"></div>
 
                     <div class="section-title">بخش‌ها</div>
                     <div class="form-group">
@@ -658,7 +979,7 @@
                 <div id="buttons" class="tab-content">
                     <div class="section-title">دکمه جدید</div>
                     <div class="form-group">
-                        <label>متن دکمه</label>
+                        <label>متن</label>
                         <input type="text" id="newButtonText" placeholder="درباره ما">
                     </div>
 
@@ -682,7 +1003,7 @@
 
                     <div id="buttonLinkField" style="display: none;">
                         <div class="form-group">
-                            <label>آدرس وب</label>
+                            <label>آدرس</label>
                             <input type="url" id="newButtonURL" placeholder="https://...">
                         </div>
                     </div>
@@ -690,7 +1011,7 @@
                     <div id="buttonMessageField" style="display: none;">
                         <div class="form-group">
                             <label>متن پیام</label>
-                            <textarea id="newButtonMessage" placeholder="پیامی که نمایش داده شود..."></textarea>
+                            <textarea id="newButtonMessage" placeholder="پیام..."></textarea>
                         </div>
                     </div>
 
@@ -698,20 +1019,27 @@
                     <div class="items-list" id="buttonsList"></div>
                 </div>
 
-                <!-- Action Buttons -->
-                <div style="margin-top: 30px;">
-                    <div class="btn-group">
-                        <button class="btn btn-download" onclick="downloadSite()">📥</button>
-                        <button class="btn btn-reset" onclick="resetAll()">🔄</button>
-                    </div>
+                <!-- Tools Tab -->
+                <div id="tools" class="tab-content">
+                    <div class="section-title">ابزارها</div>
+                    
+                    <button class="btn btn-export" onclick="exportData()">💾 صادر اطلاعات</button>
+                    <button class="btn btn-clear" onclick="clearCurrentPage()">🗑️ خالی کردن صفحه</button>
+                    <button class="btn btn-clear" onclick="duplicatePage()">📋 تکرار صفحه</button>
+                    
+                    <div class="section-title">نمایش</div>
                     <button class="btn btn-test" onclick="testSite()">🧪 تست</button>
                     <button class="btn btn-code" onclick="showCodeViewer()">💻 کد</button>
-                </div>
 
-                <div class="sidebar-footer">
-                    <p>✨ <span class="credit-text">Rob Lucci</span> © 2026</p>
-                    <p>Pro Site Builder</p>
+                    <div class="section-title">فایل</div>
+                    <button class="btn btn-download" onclick="downloadSite()">📥 دانلود</button>
+                    <button class="btn btn-reset" onclick="resetAll()">🔄 ریست</button>
                 </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <p>✨ <span class="credit-text">Rob Lucci</span> © 2026</p>
+                <p>Pro Site Builder</p>
             </div>
         </div>
 
@@ -724,7 +1052,6 @@
             <div class="notice">
                 ⚡ تغییرات لایو در سمت راست
             </div>
-            <div id="mainContent"></div>
         </div>
 
         <!-- Preview -->
@@ -769,6 +1096,15 @@
         let buttons = [];
         let currentPage = 'home';
 
+        const colors = ['#e94560', '#3498db', '#27ae60', '#f39c12', '#9b59b6', '#e74c3c', '#1abc9c', '#34495e'];
+
+        function hideLoader() {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 1500);
+        }
+
         function loadData() {
             const saved = localStorage.getItem('siteData');
             if (saved) {
@@ -791,7 +1127,7 @@
 
         function showNotification(text) {
             const notif = document.createElement('div');
-            notif.className = 'notification';
+            notif.className = 'notification success';
             notif.textContent = text;
             document.body.appendChild(notif);
             setTimeout(() => notif.remove(), 2000);
@@ -802,6 +1138,25 @@
             document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
             document.getElementById(tab).classList.add('active');
             event.target.classList.add('active');
+        }
+
+        function initColorPicker() {
+            const picker = document.getElementById('colorPicker');
+            picker.innerHTML = '';
+            colors.forEach(color => {
+                const option = document.createElement('div');
+                option.className = 'color-option';
+                option.style.background = color;
+                if (pages[currentPage].color === color) option.classList.add('active');
+                option.onclick = () => {
+                    pages[currentPage].color = color;
+                    updatePreview();
+                    saveData();
+                    initColorPicker();
+                    showNotification('✅ رنگ تغییر کرد');
+                };
+                picker.appendChild(option);
+            });
         }
 
         function updateButtonFields() {
@@ -840,6 +1195,7 @@
             document.getElementById('pageTitle').value = page.title;
             document.getElementById('pageDesc').value = page.desc;
             updateSectionsList();
+            initColorPicker();
             updatePreview();
             saveData();
         }
@@ -856,6 +1212,42 @@
                 saveData();
                 showNotification('✅ صفحه حذف شد');
             }
+        }
+
+        function duplicatePage() {
+            const page = pages[currentPage];
+            const name = page.title + ' (کپی)';
+            const id = name.replace(/\s+/g, '_').toLowerCase();
+            if (pages[id]) return;
+
+            pages[id] = JSON.parse(JSON.stringify(page));
+            pages[id].title = name;
+            pages[id].isHome = false;
+
+            updatePagesList();
+            updateButtonLinkSelect();
+            updatePreview();
+            saveData();
+            showNotification('✅ صفحه تکرار شد');
+        }
+
+        function clearCurrentPage() {
+            if (confirm('بخش‌های این صفحه حذف شود؟')) {
+                pages[currentPage].sections = [];
+                updateSectionsList();
+                updatePreview();
+                saveData();
+                showNotification('✅ بخش‌ها خالی شدند');
+            }
+        }
+
+        function exportData() {
+            const data = JSON.stringify({ pages, buttons }, null, 2);
+            const a = document.createElement('a');
+            a.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(data);
+            a.download = 'site-data.json';
+            a.click();
+            showNotification('✅ اطلاعات صادر شد');
         }
 
         function updatePagesList() {
@@ -1081,14 +1473,14 @@
 
                 let sectionsHTML = '';
                 page.sections.forEach(s => {
-                    sectionsHTML += `<div style="margin:20px 0;padding:20px;background:#2d3e50;color:#e0e0e0;border-radius:10px;border-right:4px solid #e94560;">
+                    sectionsHTML += `<div style="margin:20px 0;padding:20px;background:#2d3e50;color:#e0e0e0;border-radius:10px;border-right:4px solid #e94560;transition:all 0.3s ease;">
                         <h2 style="color:#e94560;margin-bottom:10px;">${s.title}</h2>
                         <p style="line-height:1.8;">${s.text}</p>
                     </div>`;
                 });
 
-                pagesHTML += `<div id="page-${id}" style="padding:40px 20px;">
-                    <div style="background:linear-gradient(135deg,#e94560 0%,#c23030 100%);color:white;padding:60px 20px;text-align:center;margin-bottom:30px;border-radius:10px;">
+                pagesHTML += `<div id="page-${id}" style="padding:40px 20px;animation:fadeIn 0.5s ease;">
+                    <div style="background:linear-gradient(135deg,#e94560 0%,#c23030 100%);color:white;padding:60px 20px;text-align:center;margin-bottom:30px;border-radius:10px;animation:slideDown 0.5s ease;">
                         <h1 style="font-size:2.5em;margin-bottom:10px;">${page.title}</h1>
                         <p style="font-size:1.1em;opacity:0.95;">${page.desc}</p>
                     </div>
@@ -1108,7 +1500,10 @@
         body{font-family:Segoe UI;background:#1a1a2e;color:#e0e0e0;min-height:100vh;}
         .container{max-width:1200px;margin:0 auto;background:#0f0f1e;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.7);min-height:100vh;}
         .footer{background:#000;color:#999;text-align:center;padding:20px;margin-top:30px;border-top:1px solid #333;}
-        a{color:#e94560;}
+        a{color:#e94560;text-decoration:none;}
+        a:hover{text-decoration:underline;}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
     </style>
 </head>
 <body>
@@ -1204,6 +1599,8 @@
         updateButtonLinkSelect();
         updateButtonsList();
         updateButtonFields();
+        initColorPicker();
+        hideLoader();
     </script>
 </body>
 </html>
